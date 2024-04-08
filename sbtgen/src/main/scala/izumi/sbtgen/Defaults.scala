@@ -63,6 +63,8 @@ object Defaults {
     Seq(
       "unmanagedSourceDirectories" in SettingScope.Compile ++= addScalaVersionPlusSourceDirs("Compile / unmanagedSourceDirectories"),
       "unmanagedSourceDirectories" in SettingScope.Test ++= addScalaVersionPlusSourceDirs("Test / unmanagedSourceDirectories"),
+      "unmanagedSourceDirectories" in SettingScope.Compile ++= addScalaVersionMinusSourceDirs("Compile / unmanagedSourceDirectories"),
+      "unmanagedSourceDirectories" in SettingScope.Test ++= addScalaVersionMinusSourceDirs("Test / unmanagedSourceDirectories"),
     )
   }
 
@@ -86,15 +88,29 @@ object Defaults {
        |}""".stripMargin.raw
   }
 
+  def addScalaVersionMinusSourceDirs(key: String): CRaw = {
+    s"""{
+       |  val version = scalaVersion.value
+       |  val crossVersions = crossScalaVersions.value
+       |  import Ordering.Implicits._
+       |  val gtEqVersions = crossVersions.map(CrossVersion.partialVersion).filter(_ >= CrossVersion.partialVersion(version)).flatten
+       |  ($key).value.flatMap {
+       |    case dir if dir.getPath.endsWith("scala") => gtEqVersions.map { case (m, n) => file(dir.getPath + s"-$$m.$$n-") }
+       |    case _ => Seq.empty
+       |  }
+       |}""".stripMargin.raw
+  }
+
   def addScalaVersionRangeSourceDirs(key: String): CRaw = {
     s"""{
        |  val crossVersions = crossScalaVersions.value
        |  import Ordering.Implicits._
        |  val ltEqVersions = crossVersions.map(CrossVersion.partialVersion).sorted.flatten
        |  def joinV = (_: Product).productIterator.mkString(".")
-       |  val allRangeVersions = (2 to math.max(2, ltEqVersions.size - 1))
+       |  val allRangeVersions = (2 to math.max(2, ltEqVersions.size))
        |    .flatMap(i => ltEqVersions.sliding(i).filter(_.size == i))
        |    .map(l => (l.head, l.last))
+       |    .distinct
        |  CrossVersion.partialVersion(scalaVersion.value).toList.flatMap {
        |    version =>
        |      val rangeVersions = allRangeVersions
