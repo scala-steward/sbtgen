@@ -199,7 +199,7 @@ object Defaults {
     "-Woctal-literal",
     "-Wvalue-discard",
     "-Wunused:_",
-    "-Wmacros:after", // Count variables as used when used in macros (e.g izumi.reflect.TagK evidences)
+    "-Wmacros:default", // Count variables as used when used in macros (e.g izumi.reflect.TagK evidences)
 
     // https://github.com/scala/scala/pull/6412
     // https://twitter.com/olafurpg/status/1191299377064824832

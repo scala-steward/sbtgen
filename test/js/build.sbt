@@ -132,7 +132,7 @@ lazy val `fundamentals-collections` = crossProject(JVMPlatform, JSPlatform).cros
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -286,7 +286,7 @@ lazy val `fundamentals-platform` = crossProject(JVMPlatform, JSPlatform).crossTy
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -441,7 +441,7 @@ lazy val `fundamentals-functional` = crossProject(JVMPlatform, JSPlatform).cross
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -598,7 +598,7 @@ lazy val `fundamentals-bio` = crossProject(JVMPlatform, JSPlatform).crossType(Cr
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -772,7 +772,7 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -921,7 +921,7 @@ lazy val `fundamentals-reflection` = crossProject(JVMPlatform, JSPlatform).cross
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -1082,7 +1082,7 @@ lazy val `fundamentals-json-circe` = crossProject(JVMPlatform, JSPlatform).cross
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -1263,7 +1263,7 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -1407,7 +1407,7 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -1549,7 +1549,7 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -1693,7 +1693,7 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -1833,7 +1833,7 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -1978,7 +1978,7 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -2127,7 +2127,7 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -2269,7 +2269,7 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -2417,7 +2417,7 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -2565,7 +2565,7 @@ lazy val `logstage-api` = crossProject(JVMPlatform, JSPlatform).crossType(CrossT
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -2736,7 +2736,7 @@ lazy val `logstage-core` = crossProject(JVMPlatform, JSPlatform).crossType(Cross
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -2891,7 +2891,7 @@ lazy val `logstage-rendering-circe` = crossProject(JVMPlatform, JSPlatform).cros
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -3054,7 +3054,7 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -3195,7 +3195,7 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -3336,7 +3336,7 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -3482,7 +3482,7 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -3619,7 +3619,7 @@ lazy val `idealingua-v1-model` = crossProject(JVMPlatform, JSPlatform).crossType
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -3778,7 +3778,7 @@ lazy val `idealingua-v1-core` = crossProject(JVMPlatform, JSPlatform).crossType(
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -3951,7 +3951,7 @@ lazy val `idealingua-v1-runtime-rpc-scala` = crossProject(JVMPlatform, JSPlatfor
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -4118,7 +4118,7 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -4260,7 +4260,7 @@ lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).cro
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -4426,7 +4426,7 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -4563,7 +4563,7 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -4700,7 +4700,7 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -4837,7 +4837,7 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -4983,7 +4983,7 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -5165,7 +5165,7 @@ lazy val `microsite` = project.in(file("doc/microsite"))
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -5355,7 +5355,7 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
         "-Woctal-literal",
         "-Wvalue-discard",
         "-Wunused:_",
-        "-Wmacros:after",
+        "-Wmacros:default",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
