@@ -1,9 +1,7 @@
 package izumi.sbtgen.sbtmeta
 
-import scala.annotation.experimental
 import scala.quoted.{Expr, Quotes, Type}
 
-@experimental
 object MacroParametersImpl {
 
   def extractString(name: Expr[String])(using quotes: Quotes): Expr[Option[String]] = {

@@ -85,6 +85,7 @@ val scalaOpts = scalacOptions ++= ((isSnapshot.value, scalaVersion.value) match 
   case (_, ScalaVersions.scala_3) => Seq(
     "-no-indent",
     "-explain",
+    "-experimental",
   )
   case (_, _) => Seq.empty
 })
