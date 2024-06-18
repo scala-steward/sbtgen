@@ -51,8 +51,7 @@ jobs:
       - uses: 7mind/github-env@main
         with:
           java-version: 17
-      - name: Bitwarden Secrets Manager GitHub Action
-        uses: bitwarden/sm-action@v1.0.0
+      - uses: bitwarden/sm-action@v1.0.0
         with:
           access_token: ${{ secrets.TOKEN_BITWARDEN_SM }}
           secrets: |
