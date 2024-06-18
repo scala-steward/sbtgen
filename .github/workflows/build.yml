@@ -57,6 +57,8 @@ jobs:
           access_token: ${{ secrets.TOKEN_BITWARDEN_SM }}
           secrets: |
             994f97a2-97a4-4fe1-806a-b1930104435f > SONATYPE_CREDENTIALS_FILE
+            749f4227-9f11-4ceb-9121-b1930110c3a9 > OPENSSL_KEY
+            a2fe5b5b-5f3f-47f8-961c-b1930110cea7 > OPENSSL_IV
       - name: Publish
         run: |
           bash .build.sh secrets publish

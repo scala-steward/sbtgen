@@ -28,6 +28,7 @@ function publish {
     return 0
   fi
 
+
   if [[ ! ("$CI_BRANCH" == "develop" || "$CI_BRANCH_TAG" =~ ^v.*$ ) ]] ; then
     return 0
   fi
@@ -52,6 +53,8 @@ function secrets {
     mkdir .secrets
     if [[ "$CI_PULL_REQUEST" == "false"  ]] ; then
       echo "$SONATYPE_CREDENTIALS_FILE" > "$SONATYPE_SECRET"
+      openssl aes-256-cbc -K "$OPENSSL_KEY" -iv "$OPENSSL_IV" -in secrets.tar.enc -out secrets.tar -d
+      tar xvf secrets.tar
     fi
 }
 
