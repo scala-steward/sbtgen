@@ -20,7 +20,7 @@ jobs:
     steps:
       - id: checksecret_job
         env:
-          TOKEN_BITWARDEN_SM: ${{ TOKEN_BITWARDEN_SM }}
+          TOKEN_BITWARDEN_SM: ${{ secrets.TOKEN_BITWARDEN_SM }}
         run: |
           echo "HAVE_SECRETS=${{ env.TOKEN_BITWARDEN_SM != '' }}" >> $GITHUB_OUTPUT
   build:
