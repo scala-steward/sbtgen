@@ -1,6 +1,7 @@
 testproject
 test-out
 
+.vscode
 .metals
 
 /local.sbt

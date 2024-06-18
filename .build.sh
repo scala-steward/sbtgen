@@ -3,6 +3,8 @@
 set -x
 set -e
 
+SONATYPE_SECRET=.secrets/credentials.sonatype-nexus.properties
+
 function csbt {
   COMMAND="time sbt -batch -no-colors -v $*"
   eval $COMMAND
@@ -22,7 +24,7 @@ function publish {
     return 0
   fi
 
-  if [[ ! -f .secrets/credentials.sonatype-nexus.properties ]] ; then
+  if [[ ! -f "$SONATYPE_SECRET" ]] ; then
     return 0
   fi
 
@@ -47,9 +49,9 @@ function init {
 }
 
 function secrets {
+    mkdir .secrets
     if [[ "$CI_PULL_REQUEST" == "false"  ]] ; then
-        openssl aes-256-cbc -K ${OPENSSL_KEY} -iv ${OPENSSL_IV} -in secrets.tar.enc -out secrets.tar -d
-        tar xvf secrets.tar
+      echo "$SONATYPE_CREDENTIALS_FILE" > "$SONATYPE_SECRET"
     fi
 }
 
