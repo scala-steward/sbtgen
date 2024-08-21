@@ -131,7 +131,7 @@ class Renderer(
             case Some(x) =>
               Seq(".agg", ".agg-" + x.toLowerCase)
             case None =>
-              Seq(".")
+              Seq(".agg", ".agg-root-project")
           }
 
           val aggregatedIds = group.filterNot(_.dontIncludeInSuperAgg).map(a => renderName(a.id))

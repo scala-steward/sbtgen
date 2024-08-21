@@ -5682,7 +5682,7 @@ lazy val `izumi-jvm` = (project in file(".agg/.agg-jvm"))
     `idealingua-jvm`
   )
 
-lazy val `izumi` = (project in file("."))
+lazy val `izumi` = (project in file(".agg/.agg-root-project"))
   .settings(
     publish / skip := true,
     Global / onChangedBuildSource := ReloadOnSourceChanges,

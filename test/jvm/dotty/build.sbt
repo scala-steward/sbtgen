@@ -86,7 +86,7 @@ lazy val `test-dotty-jvm` = (project in file(".agg/.agg-jvm"))
     `test-agg-jvm`
   )
 
-lazy val `test-dotty` = (project in file("."))
+lazy val `test-dotty` = (project in file(".agg/.agg-root-project"))
   .settings(
     publish / skip := true
   )

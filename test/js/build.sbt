@@ -5678,7 +5678,7 @@ lazy val `izumi-js` = (project in file(".agg/.agg-js"))
     `idealingua-js`
   )
 
-lazy val `izumi` = (project in file("."))
+lazy val `izumi` = (project in file(".agg/.agg-root-project"))
   .settings(
     publish / skip := true,
     Global / onChangedBuildSource := ReloadOnSourceChanges,
