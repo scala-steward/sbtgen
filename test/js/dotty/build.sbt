@@ -147,7 +147,7 @@ lazy val `test-dotty-js` = (project in file(".agg/.agg-js"))
     `test-agg-js`
   )
 
-lazy val `test-dotty` = (project in file(".agg/.agg-root-project"))
+lazy val `test-dotty` = (project in file("."))
   .settings(
     publish / skip := true
   )
