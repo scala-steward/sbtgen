@@ -27,30 +27,30 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ 'checksecret' ]
     steps:
-    - uses: 7mind/github-env@main
+    - uses: 7mind/github-env@minimal
       with:
-        java-version: 17
+        setup-nix: ${{ matrix.preconfigured != true }}        
     - name: Build and Test
       run: |
-        bash .build.sh build
+        bash .build.sh --nix build
   test-scripted:
     runs-on: ubuntu-latest
     needs: [ 'checksecret' ]
     steps:
-      - uses: 7mind/github-env@main
-        with:
-          java-version: 17
-      - name: Build and Test
-        run: |
-          bash .build.sh scripted
+    - uses: 7mind/github-env@minimal
+      with:
+        setup-nix: ${{ matrix.preconfigured != true }}
+    - name: Build and Test
+      run: |
+        bash .build.sh --nix scripted
   publish:
     runs-on: ubuntu-latest
     needs: [ 'build', 'test-scripted', 'checksecret']
     if: needs.checksecret.outputs.HAVE_SECRETS == 'true'
     steps:
-      - uses: 7mind/github-env@main
+      - uses: 7mind/github-env@minimal
         with:
-          java-version: 17
+          setup-nix: ${{ matrix.preconfigured != true }}
       - uses: bitwarden/sm-action@v2
         with:
           access_token: ${{ secrets.TOKEN_BITWARDEN_SM }}
@@ -60,7 +60,7 @@ jobs:
             a2fe5b5b-5f3f-47f8-961c-b1930110cea7 > OPENSSL_IV
       - name: Publish
         run: |
-          bash .build.sh secrets publish
+          bash .build.sh --nix secrets publish
   all-good:
     if: always()
     runs-on: ubuntu-latest

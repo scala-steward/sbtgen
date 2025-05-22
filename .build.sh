@@ -60,6 +60,27 @@ function secrets {
 
 init
 
+function nixify() {
+    if [[ -z "${IN_NIX_SHELL+x}" ]]; then
+        echo "[info] Restarting in Nix..."
+        export NIXIFIED=1
+        nix flake lock
+        nix flake metadata
+        exec nix develop \
+          --ignore-environment \
+          --keep HOME \
+          --keep NIXIFIED \
+          --keep DO_VERBOSE \
+          --keep CI \
+          --keep CI_BRANCH \
+          --keep CI_COMMIT \
+          --keep CI_BRANCH_TAG \
+          --keep CI_PULL_REQUEST \
+          --keep CI_BUILD_UNIQ_SUFFIX \
+          --command bash .build.sh "$@"
+    fi
+}
+
 PARAMS=()
 SOFT=0
 SKIP=()
@@ -70,6 +91,11 @@ case $i in
         echo "Doing nothing..."
     ;;
 
+    --nix)
+      idx=$((idx+1))
+      shift && nixify "$@"
+      ;;
+        
     build)
         build
     ;;
