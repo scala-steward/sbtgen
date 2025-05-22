@@ -17,6 +17,8 @@ class SbtGenTest extends AnyWordSpec {
   "sbtgen" should {
     "produce the same output in JVM-only" in {
       val dir = "target/test-out-jvm/"
+      info(s"generated: $dir")
+
       genProjects(dir, Seq.empty)
 
       assert(s"diff -r $dir/ test/jvm/".!!.isEmpty)
@@ -24,6 +26,7 @@ class SbtGenTest extends AnyWordSpec {
 
     "produce the same output in JS" in {
       val dir = "target/test-out-js/"
+      info(s"generated: $dir")
       genProjects(dir, Seq("--js"))
 
       assert(s"diff -r $dir/ test/js/".!!.isEmpty)
