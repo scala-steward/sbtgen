@@ -77,6 +77,9 @@ function nixify() {
           --keep CI_BRANCH_TAG \
           --keep CI_PULL_REQUEST \
           --keep CI_BUILD_UNIQ_SUFFIX \
+          --keep OPENSSL_KEY \
+          --keep OPENSSL_IV \
+          --keep SONATYPE_CREDENTIALS_FILE \
           --command bash .build.sh "$@"
     fi
 }
