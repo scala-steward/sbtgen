@@ -1,7 +1,6 @@
 import sbt.internal.librarymanagement.mavenint.PomExtraDependencyAttributes.SbtVersionKey
 import sbt.internal.librarymanagement.mavenint.PomExtraDependencyAttributes.ScalaVersionKey
 import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
-import xerial.sbt.Sonatype.autoImport.sonatypeProfileName
 
 ThisBuild / turbo :=true
 ThisBuild / classLoaderLayeringStrategy :=ClassLoaderLayeringStrategy.ScalaLibrary
@@ -14,16 +13,25 @@ ThisBuild / developers :=List(
   Developer(id = "7mind", name = "Septimal Mind", url = url("https://github.com/7mind"), email = "team@7mind.io"),
 )
 ThisBuild / scmInfo :=Some(ScmInfo(url("https://github.com/7mind/sbtgen"), "scm:git:https://github.com/7mind/sbtgen.git"))
-(ThisBuild / credentials) ++= {
-  val f = file(".secrets/credentials.sonatype-nexus.properties")
-  if (f.exists()) {Seq(Credentials(f))} else {Seq.empty}
-}
 
-ThisBuild / publishTo :=(if (!isSnapshot.value) {
-  sonatypePublishToBundle.value
-} else {
-  Some(Opts.resolver.sonatypeSnapshots)
-})
+ThisBuild / credentials ++= Seq(
+  Path.userHome / ".sbt" / "secrets" / "credentials.sonatype-new.properties",
+  Path.userHome / ".sbt" / "secrets" / "credentials.sonatype-nexus.properties",
+  file(".") / ".secrets" / "credentials.sonatype-nexus.properties"
+)
+  .filter(_.exists())
+  .map(Credentials.apply)
+
+// https://github.com/sbt/sbt/issues/8131
+ThisBuild / publishTo := {
+  if (isSnapshot.value) {
+    Some(
+      "central-snapshots" at "https://central.sonatype.com/repository/maven-snapshots/"
+    )
+  } else {
+    localStaging.value
+  }
+}
 
 val scalaOpts = scalacOptions ++= ((isSnapshot.value, scalaVersion.value) match {
   case (_, ScalaVersions.scala_212) => Seq(
@@ -108,8 +116,8 @@ lazy val sbtgen = (project in file("sbtgen"))
     crossScalaVersions := Seq(ScalaVersions.scala_3, ScalaVersions.scala_213, ScalaVersions.scala_212),
     scalaVersion := crossScalaVersions.value.head,
     libraryDependencies += "com.github.scopt" %% "scopt" % "4.1.0",
-    libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.12.0",
-    (ThisBuild / libraryDependencies) += "org.scalatest" %% "scalatest" % "3.2.18" % Test,
+    libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.13.0",
+    (ThisBuild / libraryDependencies) += "org.scalatest" %% "scalatest" % "3.2.19" % Test,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-version=${version.value}",
       s"-Xmacro-settings:product-group=${organization.value}",
@@ -134,7 +142,7 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
     sbtPlugin := true,
     libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
     libraryDependencies ++= Seq(
-      "io.get-coursier" %% "coursier" % "2.1.10",
+      "io.get-coursier" %% "coursier" % "2.1.24",
 
       // https://github.com/scoverage/sbt-scoverage
       ("org.scoverage" % "sbt-scoverage" % "2.3.1").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
@@ -147,9 +155,6 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
 
       // https://github.com/orrsella/sbt-stats
       ("com.orrsella" % "sbt-stats" % "1.0.7").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
-
-      // https://github.com/xerial/sbt-sonatype
-      ("org.xerial.sbt" % "sbt-sonatype" % "3.10.0").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/sbt/sbt-release
       ("com.github.sbt" % "sbt-release" % "1.4.0").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
@@ -213,7 +218,6 @@ lazy val `izumi-sbtgen` = (project in file("."))
     scalaVersion := ScalaVersions.scala_212,
     crossScalaVersions := Nil,
     publish / skip := true,
-    sonatypeProfileName := "io.7mind",
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies, // : ReleaseStep
       inquireVersions, // : ReleaseStep
