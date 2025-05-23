@@ -140,6 +140,7 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
     scalaVersion := crossScalaVersions.value.head,
     crossSbtVersions := Seq(sbtVersion.value),
     sbtPlugin := true,
+    sbtPluginPublishLegacyMavenStyle := false,
     libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
     libraryDependencies ++= Seq(
       "io.get-coursier" %% "coursier" % "2.1.24",
@@ -183,6 +184,7 @@ lazy val `sbt-tests` = (project in file("sbt/sbt-tests"))
     crossScalaVersions := Seq(ScalaVersions.scala_212),
     scalaVersion := crossScalaVersions.value.head,
     sbtPlugin := true,
+    sbtPluginPublishLegacyMavenStyle := false,
     libraryDependencies ++= Seq(
       "org.scala-sbt" % "sbt" % sbtVersion.value
     ),

@@ -240,6 +240,7 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
     def withBuildInfo(packageName: String, objectName: String): Seq[Setting[_]] = {
       Seq(
         sbtPlugin := true,
+        sbtPluginPublishLegacyMavenStyle := false,
         Compile / sourceGenerators += generateBuildInfo(packageName, objectName).taskValue,
       )
     }
