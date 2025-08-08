@@ -219,10 +219,15 @@ object Defaults {
     "-no-indent", // disable indentation syntax
     "-explain",
     "-explain-types", // Explain type errors in more detail.
-
+    "-explain-cyclic",
     "-Xmax-inlines:64", // increase inline limit
 
+    "-Wnonunit-statement",
     "-Wall", // enable all warnings
+    "-Wconf:any:verbose",
+    "-Wconf:name=UnusedNonUnitValue:silent",
+    "-Wconf:name=ValueDiscarding:silent",
+    "-Wconf:msg=^interpolation uses toString$:silent",
     "-Wconf:msg=eta-expanded even though:silent", // disable harmful anti-SAM warning
 
 //    CRaw("""if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning""""), // enable fatal warnings on CI
