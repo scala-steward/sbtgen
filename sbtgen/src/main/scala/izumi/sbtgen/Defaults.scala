@@ -222,6 +222,7 @@ object Defaults {
 
     "-Xmax-inlines:64", // increase inline limit
 
+    "-Wall", // enable all warnings
     "-Wconf:msg=eta-expanded even though:silent", // disable harmful anti-SAM warning
 
 //    CRaw("""if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning""""), // enable fatal warnings on CI
