@@ -222,12 +222,20 @@ object Defaults {
     "-explain-cyclic",
     "-Xmax-inlines:64", // increase inline limit
 
+    // enable all warnings except -Wtostring-interpolated, -Wshadow and -Wsafe-init which slows down compilation to a crawl
+    "-Wenum-comment-discard",
+    "-Wimplausible-patterns",
     "-Wnonunit-statement",
-    "-Wall", // enable all warnings
+    // "-Wsafe-init",
+    // "-Wshadow:all",
+    // "-Wtostring-interpolated",
+    "-WunstableInlineAccessors",
+    "-Wunused:all",
+    "-Wvalue-discard",
+    //
     "-Wconf:any:verbose",
     "-Wconf:name=UnusedNonUnitValue:silent",
     "-Wconf:name=ValueDiscarding:silent",
-    "-Wconf:msg=^interpolation uses toString$:silent",
     "-Wconf:msg=eta-expanded even though:silent", // disable harmful anti-SAM warning
 
 //    CRaw("""if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning""""), // enable fatal warnings on CI
