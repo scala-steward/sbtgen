@@ -10,10 +10,11 @@ object SbtgenVerificationPlugin extends AutoPlugin {
 
   override def globalSettings: Seq[Def.Setting[_]] = {
 
-    val scripts = file("project") ** "*.sc"
-    val scFiles = scripts.get
+    val projectScripts = file("project") ** "*.sc"
+    val sbtgenScripts = file("sbtgen") ** "*.sc"
+    val scFiles = Seq(new File("sbtgen.sc")) ++ projectScripts.get ++ sbtgenScripts.get
 
-    val sbtgen = (Seq(new File("sbtgen.sc")) ++ scFiles)
+    val sbtgen = scFiles
       .filter(_.exists())
       .map(f => (f, f.lastModified()))
 
