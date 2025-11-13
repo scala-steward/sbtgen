@@ -50,6 +50,10 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
         "% /* CONSTANT */"
       case _: Patch =>
         "% /* PATCH */"
+      case _: For3Use2_13 =>
+        "% /* For 3 use 2.13 */"
+      case _ =>
+        s"% /* UNKNOWN CROSSVERSION ${m.crossVersion.getClass.getSimpleName} */"
     }
     // TODO: should we support classifiers with m.explicitArtifacts ?
 
