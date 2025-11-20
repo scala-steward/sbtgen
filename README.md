@@ -124,15 +124,17 @@ Complete projects that use this tool:
 
 ## Contributors: how to publish
 
+Use 
+
+```bash
+./copy-test-directory.sh
+```
+
+To deal with build diff failures if you changed the expected output of the DSL
+
 To release new version via CI:
 
 ```bash
 sbt +clean +test release
-```
-
-To publish manually:
-
-```bash
-sbt +clean +sonatypeBundleClean +publishSigned +sonatypeBundleRelease
 ```
 
