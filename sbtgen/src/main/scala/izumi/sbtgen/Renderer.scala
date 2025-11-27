@@ -259,8 +259,10 @@ class Renderer(
         val settingsStr: String = formatSettings(
           settings = Seq(
             // FIXME: move logic to prepare
-            "skip" in SettingScope.Raw("publish") := true
-          ) ++ localSettings ++ hack,
+            "crossScalaVersions" := "Nil".raw,
+            "libraryDependencies" := "Nil".raw,
+            "skip" in SettingScope.Raw("publish") := true,
+          ) ++ (if (!isRoot) Seq("""SettingKey[Boolean]("ide-skip-project")""" := true) else Seq.empty) ++ localSettings ++ hack,
           platform = Platform.All,
           platformPrefix = false,
         )

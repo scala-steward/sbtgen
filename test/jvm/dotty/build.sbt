@@ -64,7 +64,10 @@ lazy val `test` = project.in(file("test"))
 
 lazy val `test-agg` = (project in file(".agg/test-agg"))
   .settings(
-    publish / skip := true
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
+    publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true
   )
   .aggregate(
     `test`
@@ -72,7 +75,10 @@ lazy val `test-agg` = (project in file(".agg/test-agg"))
 
 lazy val `test-agg-jvm` = (project in file(".agg/test-agg-jvm"))
   .settings(
-    publish / skip := true
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
+    publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true
   )
   .aggregate(
     `test`
@@ -80,7 +86,10 @@ lazy val `test-agg-jvm` = (project in file(".agg/test-agg-jvm"))
 
 lazy val `test-dotty-jvm` = (project in file(".agg/.agg-jvm"))
   .settings(
-    publish / skip := true
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
+    publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true
   )
   .aggregate(
     `test-agg-jvm`
@@ -88,6 +97,8 @@ lazy val `test-dotty-jvm` = (project in file(".agg/.agg-jvm"))
 
 lazy val `test-dotty` = (project in file("."))
   .settings(
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
     publish / skip := true
   )
   .aggregate(

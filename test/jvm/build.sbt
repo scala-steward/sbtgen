@@ -5454,7 +5454,10 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
 
 lazy val `fundamentals` = (project in file(".agg/fundamentals-fundamentals"))
   .settings(
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
     publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5474,7 +5477,10 @@ lazy val `fundamentals` = (project in file(".agg/fundamentals-fundamentals"))
 
 lazy val `fundamentals-jvm` = (project in file(".agg/fundamentals-fundamentals-jvm"))
   .settings(
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
     publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5494,7 +5500,10 @@ lazy val `fundamentals-jvm` = (project in file(".agg/fundamentals-fundamentals-j
 
 lazy val `distage` = (project in file(".agg/distage-distage"))
   .settings(
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
     publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5516,7 +5525,10 @@ lazy val `distage` = (project in file(".agg/distage-distage"))
 
 lazy val `distage-jvm` = (project in file(".agg/distage-distage-jvm"))
   .settings(
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
     publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5538,7 +5550,10 @@ lazy val `distage-jvm` = (project in file(".agg/distage-distage-jvm"))
 
 lazy val `logstage` = (project in file(".agg/logstage-logstage"))
   .settings(
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
     publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5558,7 +5573,10 @@ lazy val `logstage` = (project in file(".agg/logstage-logstage"))
 
 lazy val `logstage-jvm` = (project in file(".agg/logstage-logstage-jvm"))
   .settings(
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
     publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5578,7 +5596,10 @@ lazy val `logstage-jvm` = (project in file(".agg/logstage-logstage-jvm"))
 
 lazy val `idealingua` = (project in file(".agg/idealingua-v1-idealingua"))
   .settings(
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
     publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5601,7 +5622,10 @@ lazy val `idealingua` = (project in file(".agg/idealingua-v1-idealingua"))
 
 lazy val `idealingua-jvm` = (project in file(".agg/idealingua-v1-idealingua-jvm"))
   .settings(
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
     publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5624,7 +5648,10 @@ lazy val `idealingua-jvm` = (project in file(".agg/idealingua-v1-idealingua-jvm"
 
 lazy val `doc` = (project in file(".agg/doc-doc"))
   .settings(
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
     publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true,
     crossScalaVersions := Seq(
       "2.12.8"
     ),
@@ -5637,7 +5664,10 @@ lazy val `doc` = (project in file(".agg/doc-doc"))
 
 lazy val `doc-jvm` = (project in file(".agg/doc-doc-jvm"))
   .settings(
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
     publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true,
     crossScalaVersions := Seq(
       "2.12.8"
     ),
@@ -5650,7 +5680,10 @@ lazy val `doc-jvm` = (project in file(".agg/doc-doc-jvm"))
 
 lazy val `sbt-plugins` = (project in file(".agg/sbt-plugins-sbt-plugins"))
   .settings(
-    publish / skip := true
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
+    publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true
   )
   .disablePlugins(AssemblyPlugin)
   .aggregate(
@@ -5659,7 +5692,10 @@ lazy val `sbt-plugins` = (project in file(".agg/sbt-plugins-sbt-plugins"))
 
 lazy val `sbt-plugins-jvm` = (project in file(".agg/sbt-plugins-sbt-plugins-jvm"))
   .settings(
-    publish / skip := true
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
+    publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true
   )
   .disablePlugins(AssemblyPlugin)
   .aggregate(
@@ -5668,7 +5704,10 @@ lazy val `sbt-plugins-jvm` = (project in file(".agg/sbt-plugins-sbt-plugins-jvm"
 
 lazy val `izumi-jvm` = (project in file(".agg/.agg-jvm"))
   .settings(
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
     publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5685,6 +5724,8 @@ lazy val `izumi-jvm` = (project in file(".agg/.agg-jvm"))
 
 lazy val `izumi` = (project in file("."))
   .settings(
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
     publish / skip := true,
     Global / onChangedBuildSource := ReloadOnSourceChanges,
     ThisBuild / publishMavenStyle := true,
