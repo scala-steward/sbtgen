@@ -2,6 +2,7 @@ package izumi.sbt.plugins
 
 import com.github.sbt.git.GitPlugin
 import com.github.sbt.git.SbtGit.GitKeys.useConsoleForROGit
+import sbt.Keys.insideCI
 import sbt.{AutoPlugin, Def, PluginTrigger, Plugins, file}
 
 /**
@@ -16,7 +17,7 @@ object IzumiGitWorktreePlugin extends AutoPlugin {
 
   override def buildSettings: Seq[Def.Setting[_]] = {
     Seq(
-      useConsoleForROGit ~= (previousValue => if (file(".git").exists()) true else previousValue)
+      useConsoleForROGit := (if (!insideCI.value && file(".git").exists()) true else useConsoleForROGit.value)
     )
   }
 }
