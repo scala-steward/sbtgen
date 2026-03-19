@@ -21,8 +21,8 @@ object IzumiGitStampPlugin extends AutoPlugin {
 
   override def globalSettings: Seq[Def.Setting[_]] = {
     Seq(
-      izGitRevision := gitHeadCommit.value.getOrElse(""),
-      izGitBranch := gitCurrentBranch.value,
+      izGitRevision := (ThisBuild / gitHeadCommit).value.getOrElse(""),
+      izGitBranch := (ThisBuild / gitCurrentBranch).value,
       izGitIsClean := !(ThisBuild / gitUncommittedChanges).value,
       packageOptions += Def.task {
         val gitValues = Map(
