@@ -7,7 +7,6 @@ import sbt.internal.util.ConsoleLogger
 import sbt.io.syntax
 import sbt.io.syntax.File
 import sbt.librarymanagement.PublishConfiguration
-import sbt.sbtpgp.Compat.publishSignedConfigurationTask
 import sbt.{AutoPlugin, Credentials, MavenRepository, _}
 
 object IzumiPublishingPlugin extends AutoPlugin {
@@ -34,7 +33,7 @@ object IzumiPublishingPlugin extends AutoPlugin {
 
   override lazy val projectSettings = Seq(
     publishConfiguration := withOverwrite(publishConfiguration.value, isSnapshot.value),
-    publishSignedConfiguration := withOverwrite(publishSignedConfigurationTask.value, isSnapshot.value),
+    publishSignedConfiguration := withOverwrite(publishSignedConfiguration.value, isSnapshot.value),
     publishLocalConfiguration ~= withOverwriteEnabled,
     publishLocalSignedConfiguration ~= withOverwriteEnabled,
     sonatypeTarget := {

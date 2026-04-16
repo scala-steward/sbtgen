@@ -3,7 +3,7 @@ package izumi.sbt.plugins
 import com.github.sbt.git.GitPlugin
 import com.github.sbt.git.SbtGit.GitKeys.*
 import sbt.Keys.*
-import sbt.{*, Def}
+import sbt.*
 import sbt.internal.util.ConsoleLogger
 
 object IzumiGitStampPlugin extends AutoPlugin {
