@@ -27,8 +27,8 @@ object IzumiPublishingPlugin extends AutoPlugin {
   override lazy val globalSettings = Seq(
     pomIncludeRepository := (_ => false),
     publishTargets := Seq.empty,
-    releaseResolvers := Seq(Opts.resolver.sonatypeReleases),
-    snapshotResolvers := Seq(Opts.resolver.sonatypeSnapshots),
+    releaseResolvers := Seq.empty,
+    snapshotResolvers := Seq(Resolver.sonatypeCentralSnapshots),
   )
 
   override lazy val projectSettings = Seq(
@@ -38,9 +38,9 @@ object IzumiPublishingPlugin extends AutoPlugin {
     publishLocalSignedConfiguration ~= withOverwriteEnabled,
     sonatypeTarget := {
       if (isSnapshot.value)
-        Opts.resolver.sonatypeSnapshots
+        Resolver.sonatypeCentralSnapshots
       else
-        Opts.resolver.sonatypeStaging
+        Resolver.sonatypeCentralRepo("maven-releases")
     },
     credentials ++= publishTargets.value.map(_.credentials),
     resolvers ++= {
