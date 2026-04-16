@@ -115,8 +115,8 @@ lazy val sbtgen = (project in file("sbtgen"))
     crossScalaVersions := Seq(ScalaVersions.scala_3, ScalaVersions.scala_213, ScalaVersions.scala_212),
     scalaVersion := crossScalaVersions.value.head,
     libraryDependencies += "com.github.scopt" %% "scopt" % "4.1.0",
-    libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.13.0",
-    (ThisBuild / libraryDependencies) += "org.scalatest" %% "scalatest" % "3.2.19" % Test,
+    libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.14.0",
+    (ThisBuild / libraryDependencies) += "org.scalatest" %% "scalatest" % "3.2.20" % Test,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-version=${version.value}",
       s"-Xmacro-settings:product-group=${organization.value}",
@@ -148,10 +148,10 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
       ("org.scoverage" % "sbt-scoverage" % "2.4.4").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // http://www.scala-sbt.org/sbt-pgp/
-      ("com.github.sbt" % "sbt-pgp" % "2.2.1").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+      ("com.github.sbt" % "sbt-pgp" % "2.3.1").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/sbt/sbt-git
-      ("com.github.sbt" % "sbt-git" % "2.0.1").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+      ("com.github.sbt" % "sbt-git" % "2.1.0").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/orrsella/sbt-stats
       ("com.orrsella" % "sbt-stats" % "1.0.7").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
