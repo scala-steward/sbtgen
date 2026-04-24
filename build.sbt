@@ -2,17 +2,16 @@ import sbt.internal.librarymanagement.mavenint.PomExtraDependencyAttributes.SbtV
 import sbt.internal.librarymanagement.mavenint.PomExtraDependencyAttributes.ScalaVersionKey
 import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
-ThisBuild / turbo :=true
-ThisBuild / classLoaderLayeringStrategy :=ClassLoaderLayeringStrategy.ScalaLibrary
+ThisBuild / turbo := true
 
-ThisBuild / organization :="io.7mind.izumi.sbt"
+ThisBuild / organization := "io.7mind.izumi.sbt"
 
-ThisBuild / homepage :=Some(url("https://izumi.7mind.io"))
-ThisBuild / licenses :=Seq("BSD-style" -> url("http://www.opensource.org/licenses/bsd-license.php"))
-ThisBuild / developers :=List(
+ThisBuild / homepage := Some(url("https://izumi.7mind.io"))
+ThisBuild / licenses := Seq("BSD-style" -> url("http://www.opensource.org/licenses/bsd-license.php"))
+ThisBuild / developers := List(
   Developer(id = "7mind", name = "Septimal Mind", url = url("https://github.com/7mind"), email = "team@7mind.io"),
 )
-ThisBuild / scmInfo :=Some(ScmInfo(url("https://github.com/7mind/sbtgen"), "scm:git:https://github.com/7mind/sbtgen.git"))
+ThisBuild / scmInfo := Some(ScmInfo(url("https://github.com/7mind/sbtgen"), "scm:git:https://github.com/7mind/sbtgen.git"))
 
 ThisBuild / credentials ++= Seq(
   Path.userHome / ".sbt" / "secrets" / "credentials.sonatype-new.properties",

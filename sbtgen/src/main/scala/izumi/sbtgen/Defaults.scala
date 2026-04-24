@@ -9,7 +9,9 @@ object Defaults {
     */
   final val RootOptions: Seq[SettingDef.UnscopedSettingDef] = Seq(
     "onChangedBuildSource" in SettingScope.Raw("Global") := "ReloadOnSourceChanges".raw,
-    "excludeLintKeys" in SettingScope.Build += """SettingKey[Boolean]("ide-skip-project")""".raw,
+    "excludeLintKeys" in SettingScope.Raw("Global") += """SettingKey[Boolean]("ide-skip-project")""".raw,
+    "excludeLintKeys" in SettingScope.Raw("Global") += """SettingKey[Boolean]("coverage-enabled")""".raw,
+    "excludeLintKeys" in SettingScope.Raw("Global") += "publishMavenStyle".raw,
     "publishMavenStyle" in SettingScope.Build := true,
     "scalacOptions" in SettingScope.Build ++= Seq[Const](
       "-encoding",
@@ -17,7 +19,6 @@ object Defaults {
       "-feature",
       "-unchecked",
       "-deprecation",
-      "-language:higherKinds",
     ),
     "javacOptions" in SettingScope.Build ++= Seq(
       "-encoding",
@@ -131,6 +132,7 @@ object Defaults {
   )
 
   final val Scala212Options = Scala2Options ++ Seq[Const](
+    "-language:higherKinds",
     "-Xsource:3", // Compile with maximum dotty compatibility
     "-P:kind-projector:underscore-placeholders", // Use underscore type-lambda syntax by default
     "-Ypartial-unification", // 2.12 only
