@@ -9,6 +9,7 @@ object Defaults {
     */
   final val RootOptions: Seq[SettingDef.UnscopedSettingDef] = Seq(
     "onChangedBuildSource" in SettingScope.Raw("Global") := "ReloadOnSourceChanges".raw,
+    "excludeLintKeys" in SettingScope.Build += """SettingKey[Boolean]("ide-skip-project")""".raw,
     "publishMavenStyle" in SettingScope.Build := true,
     "scalacOptions" in SettingScope.Build ++= Seq[Const](
       "-encoding",

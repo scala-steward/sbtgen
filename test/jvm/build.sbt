@@ -5728,6 +5728,7 @@ lazy val `izumi` = (project in file("."))
     libraryDependencies := Nil,
     publish / skip := true,
     Global / onChangedBuildSource := ReloadOnSourceChanges,
+    ThisBuild / excludeLintKeys += SettingKey[Boolean]("ide-skip-project"),
     ThisBuild / publishMavenStyle := true,
     ThisBuild / scalacOptions ++= Seq(
       "-encoding",
