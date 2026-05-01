@@ -110,7 +110,7 @@ class Renderer(
   }
 
   def render(): Seq[String] = {
-    val artifacts = aggregates.flatMap(_.filteredArtifacts).map(a => renderArtifact(prepareArtifact(project, a)))
+    val artifacts = aggregates.flatMap(renderHolderBlock)
 
     val filteredAggs = aggregates.flatMap(prepareCrossAggregate).filterNot(_.aggregatedNames.isEmpty)
 
@@ -170,6 +170,49 @@ class Renderer(
       aggDefs,
       sc,
     ).flatten
+  }
+
+  /**
+    * Renders all of [[Aggregate]]'s child artifacts wrapped in an anonymous
+    * `val \`<agg>_holder\` = new { ... }` block, with each child re-exposed at
+    * the top level via `lazy val \`<name>\`: Project = \`<agg>_holder\`.\`<name>\``.
+    *
+    * The wrapping splits the build.sbt across multiple synthetic classes so no
+    * single one trips the JVM 64KB-per-method / class-too-large limit on
+    * sufficiently large project graphs. The re-exports preserve sbt's
+    * reflective project discovery and keep inter-aggregate cross-references
+    * resolving via the top-level scope.
+    */
+  protected def renderHolderBlock(agg: Aggregate): Option[String] = {
+    val artifacts = agg.filteredArtifacts
+    if (artifacts.isEmpty) None
+    else {
+      val rendered   = artifacts.map(a => renderArtifact(prepareArtifact(project, a)))
+      val holderName = renderName(s"${agg.name.value}_holder")
+      val body       = rendered.map(_.shift(2)).mkString("\n\n")
+      val wrapped    = s"val $holderName = new {\n$body\n}"
+      val exports    = artifacts.flatMap(renderHolderReExports(holderName))
+      Some((wrapped +: exports).mkString("\n"))
+    }
+  }
+
+  protected def renderHolderReExports(holderName: String)(a: Artifact): Seq[String] = {
+    val mainName = renderName(a.name)
+    // Annotate JVM-only projects as `Project` so sbt's reflective auto-discovery
+    // picks them up. Cross projects expose a `CrossProject` plus per-platform
+    // `Project`s; we annotate the platform-specific re-exports and let the
+    // outer one infer.
+    val mainTpe  = if (a.isJvmOnly) ": Project" else ""
+    val main     = s"lazy val $mainName$mainTpe = $holderName.$mainName"
+    val derived  = if (a.isJvmOnly) Seq.empty
+    else {
+      a.platforms.filter(p => platformEnabled(p.platform)).map {
+        penv =>
+          val n = renderName(a.nameOn0(penv.platform))
+          s"lazy val $n: Project = $holderName.$n"
+      }
+    }
+    main +: derived
   }
 
   protected def prepareCrossAggregate(aggregate: Aggregate): Seq[PreparedAggregate] = {

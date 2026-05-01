@@ -9,5433 +9,5506 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 disablePlugins(AssemblyPlugin)
 
-lazy val `fundamentals-collections` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("fundamentals/fundamentals-collections"))
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test
+val `fundamentals_holder` = new {
+  lazy val `fundamentals-collections` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("fundamentals/fundamentals-collections"))
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %%% "scalatest" % "3.1.2" % Test
+      )
     )
-  )
-  .settings(
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .jvmSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head
-  )
-  .jsSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    coverageEnabled := false,
-    scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
-  )
-lazy val `fundamentals-collectionsJVM` = `fundamentals-collections`.jvm
-  .disablePlugins(AssemblyPlugin)
-lazy val `fundamentals-collectionsJS` = `fundamentals-collections`.js
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `fundamentals-platform` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("fundamentals/fundamentals-platform"))
-  .dependsOn(
-    `fundamentals-collections` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test
-    )
-  )
-  .settings(
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .jvmSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head
-  )
-  .jsSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    coverageEnabled := false,
-    scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) },
-    Compile / npmDependencies ++= Seq(
-      (  "hash.js",  "1.1.7")
-    )
-  )
-lazy val `fundamentals-platformJVM` = `fundamentals-platform`.jvm
-  .disablePlugins(AssemblyPlugin)
-lazy val `fundamentals-platformJS` = `fundamentals-platform`.js
-  .enablePlugins(ScalaJSBundlerPlugin)
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `fundamentals-functional` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("fundamentals/fundamentals-functional"))
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test
-    )
-  )
-  .settings(
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .jvmSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head
-  )
-  .jsSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    coverageEnabled := false,
-    scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
-  )
-lazy val `fundamentals-functionalJVM` = `fundamentals-functional`.jvm
-  .disablePlugins(AssemblyPlugin)
-lazy val `fundamentals-functionalJS` = `fundamentals-functional`.js
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `fundamentals-bio` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("fundamentals/fundamentals-bio"))
-  .dependsOn(
-    `fundamentals-functional` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
-      "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Optional,
-      "org.typelevel" %%% "cats-effect" % "2.0.0-RC1" % Optional,
-      "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Optional
-    )
-  )
-  .settings(
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .jvmSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head
-  )
-  .jsSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    coverageEnabled := false,
-    scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
-  )
-lazy val `fundamentals-bioJVM` = `fundamentals-bio`.jvm
-  .disablePlugins(AssemblyPlugin)
-lazy val `fundamentals-bioJS` = `fundamentals-bio`.js
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamentals-typesafe-config"))
-  .dependsOn(
-    `fundamentals-platformJVM` % "test->compile;compile->compile",
-    `fundamentals-functionalJVM` % "test->compile;compile->compile",
-    `fundamentals-collectionsJVM` % "test->compile;compile->compile",
-    `fundamentals-reflectionJVM` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
-      "com.typesafe" % "config" % "1.3.4"
-    ),
-    libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
-    ) else Seq.empty },
-    libraryDependencies ++= {
-      val version = scalaVersion.value
-      if (version.startsWith("0.") || version.startsWith("3.")) {
-        Seq(
-          "ch.epfl.lamp" %% "tasty-reflect" % scalaVersion.value % Provided
+    .settings(
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
         )
-      } else Seq.empty
-    }
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `fundamentals-reflection` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("fundamentals/fundamentals-reflection"))
-  .dependsOn(
-    `fundamentals-platform` % "test->compile;compile->compile",
-    `fundamentals-functional` % "test->compile;compile->compile",
-    `fundamentals-collections` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
-      "io.suzaku" %%% "boopickle" % "1.3.1"
-    ),
-    libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
-    ) else Seq.empty },
-    libraryDependencies ++= {
-      val version = scalaVersion.value
-      if (version.startsWith("0.") || version.startsWith("3.")) {
-        Seq(
-          "ch.epfl.lamp" %%% "tasty-reflect" % scalaVersion.value % Provided
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
         )
-      } else Seq.empty
-    }
-  )
-  .settings(
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .jvmSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head
-  )
-  .jsSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    coverageEnabled := false,
-    scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
-  )
-lazy val `fundamentals-reflectionJVM` = `fundamentals-reflection`.jvm
-  .disablePlugins(AssemblyPlugin)
-lazy val `fundamentals-reflectionJS` = `fundamentals-reflection`.js
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `fundamentals-json-circe` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("fundamentals/fundamentals-json-circe"))
-  .dependsOn(
-    `fundamentals-platform` % "test->compile;compile->compile",
-    `fundamentals-functional` % "test->compile;compile->compile",
-    `fundamentals-collections` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
-      "io.circe" %%% "circe-core" % "0.12.0-RC4",
-      "io.circe" %%% "circe-parser" % "0.12.0-RC4",
-      "io.circe" %%% "circe-literal" % "0.12.0-RC4",
-      "io.circe" %%% "circe-generic-extras" % "0.12.0-RC4",
-      "io.circe" %%% "circe-derivation" % "0.12.0-M5"
-    )
-  )
-  .settings(
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .jvmSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head
-  )
-  .jsSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    coverageEnabled := false,
-    scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
-  )
-lazy val `fundamentals-json-circeJVM` = `fundamentals-json-circe`.jvm
-  .disablePlugins(AssemblyPlugin)
-lazy val `fundamentals-json-circeJS` = `fundamentals-json-circe`.js
-  .settings(
-    libraryDependencies ++= Seq(
-      "org.typelevel" %% "jawn-parser" % "0.14.2"
-    )
-  )
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `distage-model` = project.in(file("distage/distage-model"))
-  .dependsOn(
-    `fundamentals-platformJVM` % "test->compile;compile->compile",
-    `fundamentals-functionalJVM` % "test->compile;compile->compile",
-    `fundamentals-collectionsJVM` % "test->compile;compile->compile",
-    `fundamentals-bioJVM` % "test->compile;compile->compile",
-    `fundamentals-reflectionJVM` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
-      "org.typelevel" %% "cats-core" % "2.0.0-RC1" % Optional,
-      "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Optional
-    ),
-    libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
-    ) else Seq.empty },
-    libraryDependencies ++= {
-      val version = scalaVersion.value
-      if (version.startsWith("0.") || version.startsWith("3.")) {
-        Seq(
-          "ch.epfl.lamp" %% "tasty-reflect" % scalaVersion.value % Provided
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
         )
-      } else Seq.empty
-    }
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
-  .dependsOn(
-    `fundamentals-platformJVM` % "test->compile;compile->compile",
-    `fundamentals-functionalJVM` % "test->compile;compile->compile",
-    `fundamentals-collectionsJVM` % "test->compile;compile->compile",
-    `distage-model` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
-      "cglib" % "cglib-nodep" % "3.3.0" exclude ("xxx", "yyy")
+        case (_, _) => Seq.empty
+      } }
     )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `distage-core` = project.in(file("distage/distage-core"))
-  .dependsOn(
-    `distage-model` % "test->compile;compile->compile",
-    `distage-proxy-cglib` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
-      "cglib" % "cglib-nodep" % "3.3.0" exclude ("xxx", "yyy")
+    .jvmSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head
     )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `distage-config` = project.in(file("distage/distage-config"))
-  .dependsOn(
-    `distage-model` % "test->compile;compile->compile",
-    `fundamentals-typesafe-config` % "test->compile;compile->compile",
-    `distage-core` % "test->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
-      "com.typesafe" % "config" % "1.3.4"
+    .jsSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      coverageEnabled := false,
+      scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
     )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    Test / fork := true,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .disablePlugins(AssemblyPlugin)
+  lazy val `fundamentals-collectionsJVM` = `fundamentals-collections`.jvm
+    .disablePlugins(AssemblyPlugin)
+  lazy val `fundamentals-collectionsJS` = `fundamentals-collections`.js
+    .disablePlugins(AssemblyPlugin)
 
-lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
-  .dependsOn(
-    `distage-model` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test
+  lazy val `fundamentals-platform` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("fundamentals/fundamentals-platform"))
+    .dependsOn(
+      `fundamentals-collections` % "test->compile;compile->compile"
     )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %%% "scalatest" % "3.1.2" % Test
       )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
-  .dependsOn(
-    `distage-model` % "test->compile;compile->compile",
-    `distage-core` % "test->compile,test",
-    `distage-config` % "test->compile",
-    `logstage-coreJVM` % "test->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
-      "io.github.classgraph" % "classgraph" % "4.8.47"
     )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    Test / fork := true,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `distage-roles` = project.in(file("distage/distage-roles"))
-  .dependsOn(
-    `distage-roles-api` % "test->compile;compile->compile",
-    `logstage-di` % "test->compile;compile->compile",
-    `logstage-adapter-slf4j` % "test->compile;compile->compile",
-    `logstage-rendering-circeJVM` % "test->compile;compile->compile",
-    `distage-core` % "test->test;compile->compile",
-    `distage-plugins` % "test->test;compile->compile",
-    `distage-config` % "test->test;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
-      "org.typelevel" %% "cats-core" % "2.0.0-RC1" % Optional,
-      "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Optional,
-      "dev.zio" %% "zio" % "1.0.0-RC11-1" % Optional
-    )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `distage-static` = project.in(file("distage/distage-static"))
-  .dependsOn(
-    `distage-core` % "test->test;compile->compile",
-    `distage-roles` % "test->compile,test"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
-      "com.chuusai" %% "shapeless" % "2.3.3"
-    )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
-  .dependsOn(
-    `distage-config` % "test->compile;compile->compile",
-    `distage-roles` % "test->compile;compile->compile",
-    `logstage-di` % "test->compile;compile->compile",
-    `distage-core` % "test->test;compile->compile",
-    `distage-plugins` % "test->test;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
-      "org.scalatest" %% "scalatest" % "3.1.2",
-      "org.typelevel" %% "cats-core" % "2.0.0-RC1" % Test,
-      "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Test,
-      "dev.zio" %% "zio" % "1.0.0-RC11-1" % Test
-    )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } },
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat
-  )
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `logstage-api` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("logstage/logstage-api"))
-  .dependsOn(
-    `fundamentals-reflection` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
-      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC3"
-    ),
-    libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
-    ) else Seq.empty },
-    libraryDependencies ++= {
-      val version = scalaVersion.value
-      if (version.startsWith("0.") || version.startsWith("3.")) {
-        Seq(
-          "ch.epfl.lamp" %%% "tasty-reflect" % scalaVersion.value % Provided
+    .settings(
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
         )
-      } else Seq.empty
-    }
-  )
-  .settings(
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .jvmSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head
-  )
-  .jsSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    coverageEnabled := false,
-    scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
-  )
-lazy val `logstage-apiJVM` = `logstage-api`.jvm
-  .disablePlugins(AssemblyPlugin)
-lazy val `logstage-apiJS` = `logstage-api`.js
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `logstage-core` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("logstage/logstage-core"))
-  .dependsOn(
-    `fundamentals-bio` % "test->compile;compile->compile",
-    `logstage-api` % "test->test;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
-      "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Optional,
-      "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Optional,
-      "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Test,
-      "org.typelevel" %%% "cats-effect" % "2.0.0-RC1" % Test,
-      "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Test
-    ),
-    libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
-    ) else Seq.empty },
-    libraryDependencies ++= {
-      val version = scalaVersion.value
-      if (version.startsWith("0.") || version.startsWith("3.")) {
-        Seq(
-          "ch.epfl.lamp" %%% "tasty-reflect" % scalaVersion.value % Provided
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
         )
-      } else Seq.empty
-    }
-  )
-  .settings(
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .jvmSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head
-  )
-  .jsSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    coverageEnabled := false,
-    scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
-  )
-lazy val `logstage-coreJVM` = `logstage-core`.jvm
-  .disablePlugins(AssemblyPlugin)
-lazy val `logstage-coreJS` = `logstage-core`.js
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `logstage-rendering-circe` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("logstage/logstage-rendering-circe"))
-  .dependsOn(
-    `fundamentals-json-circe` % "test->compile;compile->compile",
-    `logstage-core` % "test->test;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test
-    )
-  )
-  .settings(
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .jvmSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head
-  )
-  .jsSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    coverageEnabled := false,
-    scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
-  )
-lazy val `logstage-rendering-circeJVM` = `logstage-rendering-circe`.jvm
-  .disablePlugins(AssemblyPlugin)
-lazy val `logstage-rendering-circeJS` = `logstage-rendering-circe`.js
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
-  .dependsOn(
-    `logstage-config` % "test->compile;compile->compile",
-    `distage-config` % "test->compile;compile->compile",
-    `distage-model` % "test->compile;compile->compile",
-    `distage-core` % "test->compile",
-    `logstage-coreJVM` % "test->test;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test
-    )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
-  .dependsOn(
-    `fundamentals-typesafe-config` % "test->compile;compile->compile",
-    `logstage-coreJVM` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test
-    )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-slf4j"))
-  .dependsOn(
-    `logstage-coreJVM` % "test->test;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
-      "org.slf4j" % "slf4j-api" % "1.7.28"
-    )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } },
-    Compile / compileOrder := CompileOrder.Mixed,
-    Test / compileOrder := CompileOrder.Mixed,
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat
-  )
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j"))
-  .dependsOn(
-    `logstage-apiJVM` % "test->compile;compile->compile",
-    `logstage-coreJVM` % "test->compile,test"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
-      "org.slf4j" % "slf4j-api" % "1.7.28",
-      "org.slf4j" % "slf4j-simple" % "1.7.28" % Test
-    )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `idealingua-v1-model` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("idealingua-v1/idealingua-v1-model"))
-  .dependsOn(
-    `fundamentals-platform` % "test->compile;compile->compile",
-    `fundamentals-functional` % "test->compile;compile->compile",
-    `fundamentals-collections` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test
-    )
-  )
-  .settings(
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .jvmSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head
-  )
-  .jsSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    coverageEnabled := false,
-    scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
-  )
-lazy val `idealingua-v1-modelJVM` = `idealingua-v1-model`.jvm
-  .disablePlugins(AssemblyPlugin)
-lazy val `idealingua-v1-modelJS` = `idealingua-v1-model`.js
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `idealingua-v1-core` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("idealingua-v1/idealingua-v1-core"))
-  .dependsOn(
-    `fundamentals-platform` % "test->compile;compile->compile",
-    `fundamentals-functional` % "test->compile;compile->compile",
-    `fundamentals-collections` % "test->compile;compile->compile",
-    `idealingua-v1-model` % "test->compile;compile->compile",
-    `fundamentals-reflection` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
-      "com.lihaoyi" %%% "fastparse" % "2.1.3"
-    )
-  )
-  .settings(
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .jvmSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head
-  )
-  .jsSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    coverageEnabled := false,
-    scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
-  )
-lazy val `idealingua-v1-coreJVM` = `idealingua-v1-core`.jvm
-  .disablePlugins(AssemblyPlugin)
-lazy val `idealingua-v1-coreJS` = `idealingua-v1-core`.js
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `idealingua-v1-runtime-rpc-scala` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("idealingua-v1/idealingua-v1-runtime-rpc-scala"))
-  .dependsOn(
-    `fundamentals-platform` % "test->compile;compile->compile",
-    `fundamentals-functional` % "test->compile;compile->compile",
-    `fundamentals-collections` % "test->compile;compile->compile",
-    `fundamentals-bio` % "test->compile;compile->compile",
-    `fundamentals-json-circe` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
-      "org.typelevel" %%% "cats-core" % "2.0.0-RC1",
-      "org.typelevel" %%% "cats-effect" % "2.0.0-RC1",
-      "dev.zio" %%% "zio" % "1.0.0-RC11-1",
-      "dev.zio" %%% "zio-interop-cats" % "2.0.0.0-RC2"
-    ),
-    libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
-    ) else Seq.empty },
-    libraryDependencies ++= {
-      val version = scalaVersion.value
-      if (version.startsWith("0.") || version.startsWith("3.")) {
-        Seq(
-          "ch.epfl.lamp" %%% "tasty-reflect" % scalaVersion.value % Provided
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
         )
-      } else Seq.empty
-    }
-  )
-  .settings(
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .jvmSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head
-  )
-  .jsSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    coverageEnabled := false,
-    scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
-  )
-lazy val `idealingua-v1-runtime-rpc-scalaJVM` = `idealingua-v1-runtime-rpc-scala`.jvm
-  .disablePlugins(AssemblyPlugin)
-lazy val `idealingua-v1-runtime-rpc-scalaJS` = `idealingua-v1-runtime-rpc-scala`.js
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/idealingua-v1-runtime-rpc-http4s"))
-  .dependsOn(
-    `idealingua-v1-runtime-rpc-scalaJVM` % "test->compile;compile->compile",
-    `logstage-coreJVM` % "test->compile;compile->compile",
-    `logstage-adapter-slf4j` % "test->compile;compile->compile",
-    `idealingua-v1-test-defs` % "test->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
-      "org.http4s" %% "http4s-dsl" % "0.21.0-M4",
-      "org.http4s" %% "http4s-circe" % "0.21.0-M4",
-      "org.http4s" %% "http4s-blaze-server" % "0.21.0-M4",
-      "org.http4s" %% "http4s-blaze-client" % "0.21.0-M4",
-      "org.asynchttpclient" % "async-http-client" % "2.10.1"
+        case (_, _) => Seq.empty
+      } }
     )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("idealingua-v1/idealingua-v1-transpilers"))
-  .dependsOn(
-    `fundamentals-platform` % "test->compile;compile->compile",
-    `fundamentals-functional` % "test->compile;compile->compile",
-    `fundamentals-collections` % "test->compile;compile->compile",
-    `fundamentals-json-circe` % "test->compile;compile->compile",
-    `idealingua-v1-core` % "test->compile;compile->compile",
-    `idealingua-v1-runtime-rpc-scala` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
-      "org.scala-lang.modules" %%% "scala-xml" % "1.2.0",
-      "org.scalameta" %%% "scalameta" % "4.2.3"
+    .jvmSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head
     )
-  )
-  .settings(
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
+    .jsSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      coverageEnabled := false,
+      scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) },
+      Compile / npmDependencies ++= Seq(
+        (  "hash.js",  "1.1.7")
       )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .jvmSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    Test / fork := true
-  )
-  .jsSettings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    coverageEnabled := false,
-    scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
-  )
-lazy val `idealingua-v1-transpilersJVM` = `idealingua-v1-transpilers`.jvm
-  .dependsOn(
-    `idealingua-v1-test-defs` % "test->compile",
-    `idealingua-v1-runtime-rpc-typescript` % "test->compile",
-    `idealingua-v1-runtime-rpc-go` % "test->compile",
-    `idealingua-v1-runtime-rpc-csharp` % "test->compile"
-  )
-  .disablePlugins(AssemblyPlugin)
-lazy val `idealingua-v1-transpilersJS` = `idealingua-v1-transpilers`.js
-  .disablePlugins(AssemblyPlugin)
-
-lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v1-test-defs"))
-  .dependsOn(
-    `idealingua-v1-runtime-rpc-scalaJVM` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test
     )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .disablePlugins(AssemblyPlugin)
+  lazy val `fundamentals-platformJVM` = `fundamentals-platform`.jvm
+    .disablePlugins(AssemblyPlugin)
+  lazy val `fundamentals-platformJS` = `fundamentals-platform`.js
+    .enablePlugins(ScalaJSBundlerPlugin)
+    .disablePlugins(AssemblyPlugin)
 
-lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1/idealingua-v1-runtime-rpc-typescript"))
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test
+  lazy val `fundamentals-functional` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("fundamentals/fundamentals-functional"))
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %%% "scalatest" % "3.1.2" % Test
+      )
     )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .disablePlugins(AssemblyPlugin)
+    .settings(
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .jvmSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head
+    )
+    .jsSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      coverageEnabled := false,
+      scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
+    )
+  lazy val `fundamentals-functionalJVM` = `fundamentals-functional`.jvm
+    .disablePlugins(AssemblyPlugin)
+  lazy val `fundamentals-functionalJS` = `fundamentals-functional`.js
+    .disablePlugins(AssemblyPlugin)
 
-lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealingua-v1-runtime-rpc-go"))
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test
+  lazy val `fundamentals-bio` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("fundamentals/fundamentals-bio"))
+    .dependsOn(
+      `fundamentals-functional` % "test->compile;compile->compile"
     )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
+        "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Optional,
+        "org.typelevel" %%% "cats-effect" % "2.0.0-RC1" % Optional,
+        "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Optional
       )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .disablePlugins(AssemblyPlugin)
+    )
+    .settings(
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .jvmSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head
+    )
+    .jsSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      coverageEnabled := false,
+      scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
+    )
+  lazy val `fundamentals-bioJVM` = `fundamentals-bio`.jvm
+    .disablePlugins(AssemblyPlugin)
+  lazy val `fundamentals-bioJS` = `fundamentals-bio`.js
+    .disablePlugins(AssemblyPlugin)
 
-lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/idealingua-v1-runtime-rpc-csharp"))
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test
+  lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamentals-typesafe-config"))
+    .dependsOn(
+      `fundamentals-platformJVM` % "test->compile;compile->compile",
+      `fundamentals-functionalJVM` % "test->compile;compile->compile",
+      `fundamentals-collectionsJVM` % "test->compile;compile->compile",
+      `fundamentals-reflectionJVM` % "test->compile;compile->compile"
     )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
-  .disablePlugins(AssemblyPlugin)
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+        "com.typesafe" % "config" % "1.3.4"
+      ),
+      libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
+        "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+      ) else Seq.empty },
+      libraryDependencies ++= {
+        val version = scalaVersion.value
+        if (version.startsWith("0.") || version.startsWith("3.")) {
+          Seq(
+            "ch.epfl.lamp" %% "tasty-reflect" % scalaVersion.value % Provided
+          )
+        } else Seq.empty
+      }
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .disablePlugins(AssemblyPlugin)
 
-lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1-compiler"))
-  .dependsOn(
-    `idealingua-v1-transpilersJVM` % "test->compile;compile->compile",
-    `idealingua-v1-runtime-rpc-scalaJVM` % "test->compile;compile->compile",
-    `idealingua-v1-runtime-rpc-typescript` % "test->compile;compile->compile",
-    `idealingua-v1-runtime-rpc-go` % "test->compile;compile->compile",
-    `idealingua-v1-runtime-rpc-csharp` % "test->compile;compile->compile",
-    `idealingua-v1-test-defs` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
-      "com.typesafe" % "config" % "1.3.4"
+  lazy val `fundamentals-reflection` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("fundamentals/fundamentals-reflection"))
+    .dependsOn(
+      `fundamentals-platform` % "test->compile;compile->compile",
+      `fundamentals-functional` % "test->compile;compile->compile",
+      `fundamentals-collections` % "test->compile;compile->compile"
     )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } },
-    assembly / mainClass := Some("izumi.idealingua.compiler.CommandlineIDLCompiler"),
-    assembly / assemblyMergeStrategy := {
-          // FIXME: workaround for https://github.com/zio/interop-cats/issues/16
-          case path if path.contains("zio/BuildInfo$.class") =>
-            MergeStrategy.last
-          case p =>
-            (assembly / assemblyMergeStrategy).value(p)
-    },
-    Compile / assembly / artifact := {
-          val art = (Compile / assembly / artifact).value
-          art.withClassifier(Some("assembly"))
-    },
-    addArtifact(Compile / assembly / artifact, assembly)
-  )
-  .enablePlugins(AssemblyPlugin)
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
+        "io.suzaku" %%% "boopickle" % "1.3.1"
+      ),
+      libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
+        "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+      ) else Seq.empty },
+      libraryDependencies ++= {
+        val version = scalaVersion.value
+        if (version.startsWith("0.") || version.startsWith("3.")) {
+          Seq(
+            "ch.epfl.lamp" %%% "tasty-reflect" % scalaVersion.value % Provided
+          )
+        } else Seq.empty
+      }
+    )
+    .settings(
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .jvmSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head
+    )
+    .jsSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      coverageEnabled := false,
+      scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
+    )
+  lazy val `fundamentals-reflectionJVM` = `fundamentals-reflection`.jvm
+    .disablePlugins(AssemblyPlugin)
+  lazy val `fundamentals-reflectionJS` = `fundamentals-reflection`.js
+    .disablePlugins(AssemblyPlugin)
 
-lazy val `microsite` = project.in(file("doc/microsite"))
-  .dependsOn(
-    `fundamentals-collectionsJVM` % "test->compile;compile->compile",
-    `fundamentals-platformJVM` % "test->compile;compile->compile",
-    `fundamentals-functionalJVM` % "test->compile;compile->compile",
-    `fundamentals-bioJVM` % "test->compile;compile->compile",
-    `fundamentals-typesafe-config` % "test->compile;compile->compile",
-    `fundamentals-reflectionJVM` % "test->compile;compile->compile",
-    `fundamentals-json-circeJVM` % "test->compile;compile->compile",
-    `distage-model` % "test->compile;compile->compile",
-    `distage-proxy-cglib` % "test->compile;compile->compile",
-    `distage-core` % "test->compile;compile->compile",
-    `distage-config` % "test->compile;compile->compile",
-    `distage-roles-api` % "test->compile;compile->compile",
-    `distage-plugins` % "test->compile;compile->compile",
-    `distage-roles` % "test->compile;compile->compile",
-    `distage-static` % "test->compile;compile->compile",
-    `distage-testkit` % "test->compile;compile->compile",
-    `logstage-apiJVM` % "test->compile;compile->compile",
-    `logstage-coreJVM` % "test->compile;compile->compile",
-    `logstage-rendering-circeJVM` % "test->compile;compile->compile",
-    `logstage-di` % "test->compile;compile->compile",
-    `logstage-config` % "test->compile;compile->compile",
-    `logstage-adapter-slf4j` % "test->compile;compile->compile",
-    `logstage-sink-slf4j` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
-      "org.typelevel" %% "cats-core" % "2.0.0-RC1",
-      "org.typelevel" %% "cats-effect" % "2.0.0-RC1",
-      "dev.zio" %% "zio" % "1.0.0-RC11-1",
-      "dev.zio" %% "zio-interop-cats" % "2.0.0.0-RC2",
-      "org.http4s" %% "http4s-dsl" % "0.21.0-M4",
-      "org.http4s" %% "http4s-circe" % "0.21.0-M4",
-      "org.http4s" %% "http4s-blaze-server" % "0.21.0-M4",
-      "org.http4s" %% "http4s-blaze-client" % "0.21.0-M4"
+  lazy val `fundamentals-json-circe` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("fundamentals/fundamentals-json-circe"))
+    .dependsOn(
+      `fundamentals-platform` % "test->compile;compile->compile",
+      `fundamentals-functional` % "test->compile;compile->compile",
+      `fundamentals-collections` % "test->compile;compile->compile"
     )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.8"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
+        "io.circe" %%% "circe-core" % "0.12.0-RC4",
+        "io.circe" %%% "circe-parser" % "0.12.0-RC4",
+        "io.circe" %%% "circe-literal" % "0.12.0-RC4",
+        "io.circe" %%% "circe-generic-extras" % "0.12.0-RC4",
+        "io.circe" %%% "circe-derivation" % "0.12.0-M5"
       )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
+    )
+    .settings(
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .jvmSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head
+    )
+    .jsSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      coverageEnabled := false,
+      scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
+    )
+  lazy val `fundamentals-json-circeJVM` = `fundamentals-json-circe`.jvm
+    .disablePlugins(AssemblyPlugin)
+  lazy val `fundamentals-json-circeJS` = `fundamentals-json-circe`.js
+    .settings(
+      libraryDependencies ++= Seq(
+        "org.typelevel" %% "jawn-parser" % "0.14.2"
       )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
+    )
+    .disablePlugins(AssemblyPlugin)
+}
+lazy val `fundamentals-collections` = `fundamentals_holder`.`fundamentals-collections`
+lazy val `fundamentals-collectionsJVM`: Project = `fundamentals_holder`.`fundamentals-collectionsJVM`
+lazy val `fundamentals-collectionsJS`: Project = `fundamentals_holder`.`fundamentals-collectionsJS`
+lazy val `fundamentals-platform` = `fundamentals_holder`.`fundamentals-platform`
+lazy val `fundamentals-platformJVM`: Project = `fundamentals_holder`.`fundamentals-platformJVM`
+lazy val `fundamentals-platformJS`: Project = `fundamentals_holder`.`fundamentals-platformJS`
+lazy val `fundamentals-functional` = `fundamentals_holder`.`fundamentals-functional`
+lazy val `fundamentals-functionalJVM`: Project = `fundamentals_holder`.`fundamentals-functionalJVM`
+lazy val `fundamentals-functionalJS`: Project = `fundamentals_holder`.`fundamentals-functionalJS`
+lazy val `fundamentals-bio` = `fundamentals_holder`.`fundamentals-bio`
+lazy val `fundamentals-bioJVM`: Project = `fundamentals_holder`.`fundamentals-bioJVM`
+lazy val `fundamentals-bioJS`: Project = `fundamentals_holder`.`fundamentals-bioJS`
+lazy val `fundamentals-typesafe-config`: Project = `fundamentals_holder`.`fundamentals-typesafe-config`
+lazy val `fundamentals-reflection` = `fundamentals_holder`.`fundamentals-reflection`
+lazy val `fundamentals-reflectionJVM`: Project = `fundamentals_holder`.`fundamentals-reflectionJVM`
+lazy val `fundamentals-reflectionJS`: Project = `fundamentals_holder`.`fundamentals-reflectionJS`
+lazy val `fundamentals-json-circe` = `fundamentals_holder`.`fundamentals-json-circe`
+lazy val `fundamentals-json-circeJVM`: Project = `fundamentals_holder`.`fundamentals-json-circeJVM`
+lazy val `fundamentals-json-circeJS`: Project = `fundamentals_holder`.`fundamentals-json-circeJS`
+
+val `distage_holder` = new {
+  lazy val `distage-model` = project.in(file("distage/distage-model"))
+    .dependsOn(
+      `fundamentals-platformJVM` % "test->compile;compile->compile",
+      `fundamentals-functionalJVM` % "test->compile;compile->compile",
+      `fundamentals-collectionsJVM` % "test->compile;compile->compile",
+      `fundamentals-bioJVM` % "test->compile;compile->compile",
+      `fundamentals-reflectionJVM` % "test->compile;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+        "org.typelevel" %% "cats-core" % "2.0.0-RC1" % Optional,
+        "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Optional
+      ),
+      libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
+        "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+      ) else Seq.empty },
+      libraryDependencies ++= {
+        val version = scalaVersion.value
+        if (version.startsWith("0.") || version.startsWith("3.")) {
+          Seq(
+            "ch.epfl.lamp" %% "tasty-reflect" % scalaVersion.value % Provided
+          )
+        } else Seq.empty
+      }
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
+    .dependsOn(
+      `fundamentals-platformJVM` % "test->compile;compile->compile",
+      `fundamentals-functionalJVM` % "test->compile;compile->compile",
+      `fundamentals-collectionsJVM` % "test->compile;compile->compile",
+      `distage-model` % "test->compile;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+        "cglib" % "cglib-nodep" % "3.3.0" exclude ("xxx", "yyy")
       )
-      case (_, _) => Seq.empty
-    } },
-    crossScalaVersions := Seq(
-      "2.12.8"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    coverageEnabled := false,
-    publish / skip := true,
-    SettingKey[String]("doc-keys-prefix") := {if (isSnapshot.value) {
-                "latest/snapshot"
-              } else {
-                "latest/release"
-              }},
-    previewFixedPort := Some(9999),
-    com.github.sbt.git.SbtGit.GitKeys.gitRemoteRepo := "git@github.com:7mind/izumi-microsite.git",
-    Compile / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
-    mdocIn := baseDirectory.value / "src/main/tut",
-    (Compile / paradox) / sourceDirectory := mdocOut.value,
-    mdocExtraArguments ++= Seq(
-      " --no-link-hygiene"
-    ),
-    SitePlugin.autoImport.makeSite / mappings := {
-                (SitePlugin.autoImport.makeSite / mappings)
-                  .dependsOn(mdoc.toTask(" "))
-                  .value
-              },
-    (Compile / paradox) / version := version.value,
-    ParadoxMaterialThemePlugin.paradoxMaterialThemeSettings(Compile),
-    addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, ScalaUnidoc / siteSubdirName),
-    ScalaUnidoc / unidoc / unidocProjectFilter := inAggregates(`izumi-jvm`, transitive=true),
-    Compile / paradoxMaterialTheme ~= {
-                _.withCopyright("7mind.io")
-                  .withRepository(uri("https://github.com/7mind/izumi"))
-                //        .withColor("222", "434343")
-              },
-    ScalaUnidoc / siteSubdirName := s"${SettingKey[String]("doc-keys-prefix").value}/api",
-    Paradox / siteSubdirName := s"${SettingKey[String]("doc-keys-prefix").value}/doc",
-    paradoxProperties ++= Map(
-                "scaladoc.izumi.base_url" -> s"/${SettingKey[String]("doc-keys-prefix").value}/api/com/github/pshirshov/",
-                "scaladoc.base_url" -> s"/${SettingKey[String]("doc-keys-prefix").value}/api/",
-                "izumi.version" -> version.value,
-              ),
-    ghpagesCleanSite / excludeFilter :=
-                new FileFilter {
-                  def accept(f: File): Boolean = {
-                    (f.toPath.startsWith(ghpagesRepository.value.toPath.resolve("latest")) && !f.toPath.startsWith(ghpagesRepository.value.toPath.resolve(SettingKey[String]("doc-keys-prefix").value))) ||
-                      (ghpagesRepository.value / "CNAME").getCanonicalPath == f.getCanonicalPath ||
-                      (ghpagesRepository.value / ".nojekyll").getCanonicalPath == f.getCanonicalPath ||
-                      (ghpagesRepository.value / "index.html").getCanonicalPath == f.getCanonicalPath ||
-                      (ghpagesRepository.value / "README.md").getCanonicalPath == f.getCanonicalPath ||
-                      f.toPath.startsWith((ghpagesRepository.value / "media").toPath) ||
-                      f.toPath.startsWith((ghpagesRepository.value / "v0.5.50-SNAPSHOT").toPath)
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `distage-core` = project.in(file("distage/distage-core"))
+    .dependsOn(
+      `distage-model` % "test->compile;compile->compile",
+      `distage-proxy-cglib` % "test->compile;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+        "cglib" % "cglib-nodep" % "3.3.0" exclude ("xxx", "yyy")
+      )
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `distage-config` = project.in(file("distage/distage-config"))
+    .dependsOn(
+      `distage-model` % "test->compile;compile->compile",
+      `fundamentals-typesafe-config` % "test->compile;compile->compile",
+      `distage-core` % "test->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+        "com.typesafe" % "config" % "1.3.4"
+      )
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      Test / fork := true,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
+    .dependsOn(
+      `distage-model` % "test->compile;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test
+      )
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
+    .dependsOn(
+      `distage-model` % "test->compile;compile->compile",
+      `distage-core` % "test->compile,test",
+      `distage-config` % "test->compile",
+      `logstage-coreJVM` % "test->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+        "io.github.classgraph" % "classgraph" % "4.8.47"
+      )
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      Test / fork := true,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `distage-roles` = project.in(file("distage/distage-roles"))
+    .dependsOn(
+      `distage-roles-api` % "test->compile;compile->compile",
+      `logstage-di` % "test->compile;compile->compile",
+      `logstage-adapter-slf4j` % "test->compile;compile->compile",
+      `logstage-rendering-circeJVM` % "test->compile;compile->compile",
+      `distage-core` % "test->test;compile->compile",
+      `distage-plugins` % "test->test;compile->compile",
+      `distage-config` % "test->test;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+        "org.typelevel" %% "cats-core" % "2.0.0-RC1" % Optional,
+        "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Optional,
+        "dev.zio" %% "zio" % "1.0.0-RC11-1" % Optional
+      )
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `distage-static` = project.in(file("distage/distage-static"))
+    .dependsOn(
+      `distage-core` % "test->test;compile->compile",
+      `distage-roles` % "test->compile,test"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+        "com.chuusai" %% "shapeless" % "2.3.3"
+      )
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
+    .dependsOn(
+      `distage-config` % "test->compile;compile->compile",
+      `distage-roles` % "test->compile;compile->compile",
+      `logstage-di` % "test->compile;compile->compile",
+      `distage-core` % "test->test;compile->compile",
+      `distage-plugins` % "test->test;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+        "org.scalatest" %% "scalatest" % "3.1.2",
+        "org.typelevel" %% "cats-core" % "2.0.0-RC1" % Test,
+        "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Test,
+        "dev.zio" %% "zio" % "1.0.0-RC11-1" % Test
+      )
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } },
+      Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat
+    )
+    .disablePlugins(AssemblyPlugin)
+}
+lazy val `distage-model`: Project = `distage_holder`.`distage-model`
+lazy val `distage-proxy-cglib`: Project = `distage_holder`.`distage-proxy-cglib`
+lazy val `distage-core`: Project = `distage_holder`.`distage-core`
+lazy val `distage-config`: Project = `distage_holder`.`distage-config`
+lazy val `distage-roles-api`: Project = `distage_holder`.`distage-roles-api`
+lazy val `distage-plugins`: Project = `distage_holder`.`distage-plugins`
+lazy val `distage-roles`: Project = `distage_holder`.`distage-roles`
+lazy val `distage-static`: Project = `distage_holder`.`distage-static`
+lazy val `distage-testkit`: Project = `distage_holder`.`distage-testkit`
+
+val `logstage_holder` = new {
+  lazy val `logstage-api` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("logstage/logstage-api"))
+    .dependsOn(
+      `fundamentals-reflection` % "test->compile;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
+        "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC3"
+      ),
+      libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
+        "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+      ) else Seq.empty },
+      libraryDependencies ++= {
+        val version = scalaVersion.value
+        if (version.startsWith("0.") || version.startsWith("3.")) {
+          Seq(
+            "ch.epfl.lamp" %%% "tasty-reflect" % scalaVersion.value % Provided
+          )
+        } else Seq.empty
+      }
+    )
+    .settings(
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .jvmSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head
+    )
+    .jsSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      coverageEnabled := false,
+      scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
+    )
+  lazy val `logstage-apiJVM` = `logstage-api`.jvm
+    .disablePlugins(AssemblyPlugin)
+  lazy val `logstage-apiJS` = `logstage-api`.js
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `logstage-core` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("logstage/logstage-core"))
+    .dependsOn(
+      `fundamentals-bio` % "test->compile;compile->compile",
+      `logstage-api` % "test->test;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
+        "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Optional,
+        "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Optional,
+        "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Test,
+        "org.typelevel" %%% "cats-effect" % "2.0.0-RC1" % Test,
+        "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Test
+      ),
+      libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
+        "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+      ) else Seq.empty },
+      libraryDependencies ++= {
+        val version = scalaVersion.value
+        if (version.startsWith("0.") || version.startsWith("3.")) {
+          Seq(
+            "ch.epfl.lamp" %%% "tasty-reflect" % scalaVersion.value % Provided
+          )
+        } else Seq.empty
+      }
+    )
+    .settings(
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .jvmSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head
+    )
+    .jsSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      coverageEnabled := false,
+      scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
+    )
+  lazy val `logstage-coreJVM` = `logstage-core`.jvm
+    .disablePlugins(AssemblyPlugin)
+  lazy val `logstage-coreJS` = `logstage-core`.js
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `logstage-rendering-circe` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("logstage/logstage-rendering-circe"))
+    .dependsOn(
+      `fundamentals-json-circe` % "test->compile;compile->compile",
+      `logstage-core` % "test->test;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %%% "scalatest" % "3.1.2" % Test
+      )
+    )
+    .settings(
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .jvmSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head
+    )
+    .jsSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      coverageEnabled := false,
+      scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
+    )
+  lazy val `logstage-rendering-circeJVM` = `logstage-rendering-circe`.jvm
+    .disablePlugins(AssemblyPlugin)
+  lazy val `logstage-rendering-circeJS` = `logstage-rendering-circe`.js
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
+    .dependsOn(
+      `logstage-config` % "test->compile;compile->compile",
+      `distage-config` % "test->compile;compile->compile",
+      `distage-model` % "test->compile;compile->compile",
+      `distage-core` % "test->compile",
+      `logstage-coreJVM` % "test->test;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test
+      )
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
+    .dependsOn(
+      `fundamentals-typesafe-config` % "test->compile;compile->compile",
+      `logstage-coreJVM` % "test->compile;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test
+      )
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-slf4j"))
+    .dependsOn(
+      `logstage-coreJVM` % "test->test;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+        "org.slf4j" % "slf4j-api" % "1.7.28"
+      )
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } },
+      Compile / compileOrder := CompileOrder.Mixed,
+      Test / compileOrder := CompileOrder.Mixed,
+      Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat
+    )
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j"))
+    .dependsOn(
+      `logstage-apiJVM` % "test->compile;compile->compile",
+      `logstage-coreJVM` % "test->compile,test"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+        "org.slf4j" % "slf4j-api" % "1.7.28",
+        "org.slf4j" % "slf4j-simple" % "1.7.28" % Test
+      )
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .disablePlugins(AssemblyPlugin)
+}
+lazy val `logstage-api` = `logstage_holder`.`logstage-api`
+lazy val `logstage-apiJVM`: Project = `logstage_holder`.`logstage-apiJVM`
+lazy val `logstage-apiJS`: Project = `logstage_holder`.`logstage-apiJS`
+lazy val `logstage-core` = `logstage_holder`.`logstage-core`
+lazy val `logstage-coreJVM`: Project = `logstage_holder`.`logstage-coreJVM`
+lazy val `logstage-coreJS`: Project = `logstage_holder`.`logstage-coreJS`
+lazy val `logstage-rendering-circe` = `logstage_holder`.`logstage-rendering-circe`
+lazy val `logstage-rendering-circeJVM`: Project = `logstage_holder`.`logstage-rendering-circeJVM`
+lazy val `logstage-rendering-circeJS`: Project = `logstage_holder`.`logstage-rendering-circeJS`
+lazy val `logstage-di`: Project = `logstage_holder`.`logstage-di`
+lazy val `logstage-config`: Project = `logstage_holder`.`logstage-config`
+lazy val `logstage-adapter-slf4j`: Project = `logstage_holder`.`logstage-adapter-slf4j`
+lazy val `logstage-sink-slf4j`: Project = `logstage_holder`.`logstage-sink-slf4j`
+
+val `idealingua_holder` = new {
+  lazy val `idealingua-v1-model` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("idealingua-v1/idealingua-v1-model"))
+    .dependsOn(
+      `fundamentals-platform` % "test->compile;compile->compile",
+      `fundamentals-functional` % "test->compile;compile->compile",
+      `fundamentals-collections` % "test->compile;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %%% "scalatest" % "3.1.2" % Test
+      )
+    )
+    .settings(
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .jvmSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head
+    )
+    .jsSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      coverageEnabled := false,
+      scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
+    )
+  lazy val `idealingua-v1-modelJVM` = `idealingua-v1-model`.jvm
+    .disablePlugins(AssemblyPlugin)
+  lazy val `idealingua-v1-modelJS` = `idealingua-v1-model`.js
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `idealingua-v1-core` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("idealingua-v1/idealingua-v1-core"))
+    .dependsOn(
+      `fundamentals-platform` % "test->compile;compile->compile",
+      `fundamentals-functional` % "test->compile;compile->compile",
+      `fundamentals-collections` % "test->compile;compile->compile",
+      `idealingua-v1-model` % "test->compile;compile->compile",
+      `fundamentals-reflection` % "test->compile;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
+        "com.lihaoyi" %%% "fastparse" % "2.1.3"
+      )
+    )
+    .settings(
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .jvmSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head
+    )
+    .jsSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      coverageEnabled := false,
+      scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
+    )
+  lazy val `idealingua-v1-coreJVM` = `idealingua-v1-core`.jvm
+    .disablePlugins(AssemblyPlugin)
+  lazy val `idealingua-v1-coreJS` = `idealingua-v1-core`.js
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `idealingua-v1-runtime-rpc-scala` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("idealingua-v1/idealingua-v1-runtime-rpc-scala"))
+    .dependsOn(
+      `fundamentals-platform` % "test->compile;compile->compile",
+      `fundamentals-functional` % "test->compile;compile->compile",
+      `fundamentals-collections` % "test->compile;compile->compile",
+      `fundamentals-bio` % "test->compile;compile->compile",
+      `fundamentals-json-circe` % "test->compile;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
+        "org.typelevel" %%% "cats-core" % "2.0.0-RC1",
+        "org.typelevel" %%% "cats-effect" % "2.0.0-RC1",
+        "dev.zio" %%% "zio" % "1.0.0-RC11-1",
+        "dev.zio" %%% "zio-interop-cats" % "2.0.0.0-RC2"
+      ),
+      libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
+        "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+      ) else Seq.empty },
+      libraryDependencies ++= {
+        val version = scalaVersion.value
+        if (version.startsWith("0.") || version.startsWith("3.")) {
+          Seq(
+            "ch.epfl.lamp" %%% "tasty-reflect" % scalaVersion.value % Provided
+          )
+        } else Seq.empty
+      }
+    )
+    .settings(
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .jvmSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head
+    )
+    .jsSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      coverageEnabled := false,
+      scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
+    )
+  lazy val `idealingua-v1-runtime-rpc-scalaJVM` = `idealingua-v1-runtime-rpc-scala`.jvm
+    .disablePlugins(AssemblyPlugin)
+  lazy val `idealingua-v1-runtime-rpc-scalaJS` = `idealingua-v1-runtime-rpc-scala`.js
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/idealingua-v1-runtime-rpc-http4s"))
+    .dependsOn(
+      `idealingua-v1-runtime-rpc-scalaJVM` % "test->compile;compile->compile",
+      `logstage-coreJVM` % "test->compile;compile->compile",
+      `logstage-adapter-slf4j` % "test->compile;compile->compile",
+      `idealingua-v1-test-defs` % "test->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+        "org.http4s" %% "http4s-dsl" % "0.21.0-M4",
+        "org.http4s" %% "http4s-circe" % "0.21.0-M4",
+        "org.http4s" %% "http4s-blaze-server" % "0.21.0-M4",
+        "org.http4s" %% "http4s-blaze-client" % "0.21.0-M4",
+        "org.asynchttpclient" % "async-http-client" % "2.10.1"
+      )
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("idealingua-v1/idealingua-v1-transpilers"))
+    .dependsOn(
+      `fundamentals-platform` % "test->compile;compile->compile",
+      `fundamentals-functional` % "test->compile;compile->compile",
+      `fundamentals-collections` % "test->compile;compile->compile",
+      `fundamentals-json-circe` % "test->compile;compile->compile",
+      `idealingua-v1-core` % "test->compile;compile->compile",
+      `idealingua-v1-runtime-rpc-scala` % "test->compile;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
+        "org.scala-lang.modules" %%% "scala-xml" % "1.2.0",
+        "org.scalameta" %%% "scalameta" % "4.2.3"
+      )
+    )
+    .settings(
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .jvmSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      Test / fork := true
+    )
+    .jsSettings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      coverageEnabled := false,
+      scalaJSLinkerConfig := { scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }
+    )
+  lazy val `idealingua-v1-transpilersJVM` = `idealingua-v1-transpilers`.jvm
+    .dependsOn(
+      `idealingua-v1-test-defs` % "test->compile",
+      `idealingua-v1-runtime-rpc-typescript` % "test->compile",
+      `idealingua-v1-runtime-rpc-go` % "test->compile",
+      `idealingua-v1-runtime-rpc-csharp` % "test->compile"
+    )
+    .disablePlugins(AssemblyPlugin)
+  lazy val `idealingua-v1-transpilersJS` = `idealingua-v1-transpilers`.js
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v1-test-defs"))
+    .dependsOn(
+      `idealingua-v1-runtime-rpc-scalaJVM` % "test->compile;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test
+      )
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1/idealingua-v1-runtime-rpc-typescript"))
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test
+      )
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealingua-v1-runtime-rpc-go"))
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test
+      )
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/idealingua-v1-runtime-rpc-csharp"))
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test
+      )
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } }
+    )
+    .disablePlugins(AssemblyPlugin)
+
+  lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1-compiler"))
+    .dependsOn(
+      `idealingua-v1-transpilersJVM` % "test->compile;compile->compile",
+      `idealingua-v1-runtime-rpc-scalaJVM` % "test->compile;compile->compile",
+      `idealingua-v1-runtime-rpc-typescript` % "test->compile;compile->compile",
+      `idealingua-v1-runtime-rpc-go` % "test->compile;compile->compile",
+      `idealingua-v1-runtime-rpc-csharp` % "test->compile;compile->compile",
+      `idealingua-v1-test-defs` % "test->compile;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+        "com.typesafe" % "config" % "1.3.4"
+      )
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } },
+      assembly / mainClass := Some("izumi.idealingua.compiler.CommandlineIDLCompiler"),
+      assembly / assemblyMergeStrategy := {
+            // FIXME: workaround for https://github.com/zio/interop-cats/issues/16
+            case path if path.contains("zio/BuildInfo$.class") =>
+              MergeStrategy.last
+            case p =>
+              (assembly / assemblyMergeStrategy).value(p)
+      },
+      Compile / assembly / artifact := {
+            val art = (Compile / assembly / artifact).value
+            art.withClassifier(Some("assembly"))
+      },
+      addArtifact(Compile / assembly / artifact, assembly)
+    )
+    .enablePlugins(AssemblyPlugin)
+}
+lazy val `idealingua-v1-model` = `idealingua_holder`.`idealingua-v1-model`
+lazy val `idealingua-v1-modelJVM`: Project = `idealingua_holder`.`idealingua-v1-modelJVM`
+lazy val `idealingua-v1-modelJS`: Project = `idealingua_holder`.`idealingua-v1-modelJS`
+lazy val `idealingua-v1-core` = `idealingua_holder`.`idealingua-v1-core`
+lazy val `idealingua-v1-coreJVM`: Project = `idealingua_holder`.`idealingua-v1-coreJVM`
+lazy val `idealingua-v1-coreJS`: Project = `idealingua_holder`.`idealingua-v1-coreJS`
+lazy val `idealingua-v1-runtime-rpc-scala` = `idealingua_holder`.`idealingua-v1-runtime-rpc-scala`
+lazy val `idealingua-v1-runtime-rpc-scalaJVM`: Project = `idealingua_holder`.`idealingua-v1-runtime-rpc-scalaJVM`
+lazy val `idealingua-v1-runtime-rpc-scalaJS`: Project = `idealingua_holder`.`idealingua-v1-runtime-rpc-scalaJS`
+lazy val `idealingua-v1-runtime-rpc-http4s`: Project = `idealingua_holder`.`idealingua-v1-runtime-rpc-http4s`
+lazy val `idealingua-v1-transpilers` = `idealingua_holder`.`idealingua-v1-transpilers`
+lazy val `idealingua-v1-transpilersJVM`: Project = `idealingua_holder`.`idealingua-v1-transpilersJVM`
+lazy val `idealingua-v1-transpilersJS`: Project = `idealingua_holder`.`idealingua-v1-transpilersJS`
+lazy val `idealingua-v1-test-defs`: Project = `idealingua_holder`.`idealingua-v1-test-defs`
+lazy val `idealingua-v1-runtime-rpc-typescript`: Project = `idealingua_holder`.`idealingua-v1-runtime-rpc-typescript`
+lazy val `idealingua-v1-runtime-rpc-go`: Project = `idealingua_holder`.`idealingua-v1-runtime-rpc-go`
+lazy val `idealingua-v1-runtime-rpc-csharp`: Project = `idealingua_holder`.`idealingua-v1-runtime-rpc-csharp`
+lazy val `idealingua-v1-compiler`: Project = `idealingua_holder`.`idealingua-v1-compiler`
+
+val `doc_holder` = new {
+  lazy val `microsite` = project.in(file("doc/microsite"))
+    .dependsOn(
+      `fundamentals-collectionsJVM` % "test->compile;compile->compile",
+      `fundamentals-platformJVM` % "test->compile;compile->compile",
+      `fundamentals-functionalJVM` % "test->compile;compile->compile",
+      `fundamentals-bioJVM` % "test->compile;compile->compile",
+      `fundamentals-typesafe-config` % "test->compile;compile->compile",
+      `fundamentals-reflectionJVM` % "test->compile;compile->compile",
+      `fundamentals-json-circeJVM` % "test->compile;compile->compile",
+      `distage-model` % "test->compile;compile->compile",
+      `distage-proxy-cglib` % "test->compile;compile->compile",
+      `distage-core` % "test->compile;compile->compile",
+      `distage-config` % "test->compile;compile->compile",
+      `distage-roles-api` % "test->compile;compile->compile",
+      `distage-plugins` % "test->compile;compile->compile",
+      `distage-roles` % "test->compile;compile->compile",
+      `distage-static` % "test->compile;compile->compile",
+      `distage-testkit` % "test->compile;compile->compile",
+      `logstage-apiJVM` % "test->compile;compile->compile",
+      `logstage-coreJVM` % "test->compile;compile->compile",
+      `logstage-rendering-circeJVM` % "test->compile;compile->compile",
+      `logstage-di` % "test->compile;compile->compile",
+      `logstage-config` % "test->compile;compile->compile",
+      `logstage-adapter-slf4j` % "test->compile;compile->compile",
+      `logstage-sink-slf4j` % "test->compile;compile->compile"
+    )
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+        "org.typelevel" %% "cats-core" % "2.0.0-RC1",
+        "org.typelevel" %% "cats-effect" % "2.0.0-RC1",
+        "dev.zio" %% "zio" % "1.0.0-RC11-1",
+        "dev.zio" %% "zio-interop-cats" % "2.0.0.0-RC2",
+        "org.http4s" %% "http4s-dsl" % "0.21.0-M4",
+        "org.http4s" %% "http4s-circe" % "0.21.0-M4",
+        "org.http4s" %% "http4s-blaze-server" % "0.21.0-M4",
+        "org.http4s" %% "http4s-blaze-client" % "0.21.0-M4"
+      )
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.8"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } },
+      crossScalaVersions := Seq(
+        "2.12.8"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      coverageEnabled := false,
+      publish / skip := true,
+      SettingKey[String]("doc-keys-prefix") := {if (isSnapshot.value) {
+                  "latest/snapshot"
+                } else {
+                  "latest/release"
+                }},
+      previewFixedPort := Some(9999),
+      com.github.sbt.git.SbtGit.GitKeys.gitRemoteRepo := "git@github.com:7mind/izumi-microsite.git",
+      Compile / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
+      mdocIn := baseDirectory.value / "src/main/tut",
+      (Compile / paradox) / sourceDirectory := mdocOut.value,
+      mdocExtraArguments ++= Seq(
+        " --no-link-hygiene"
+      ),
+      SitePlugin.autoImport.makeSite / mappings := {
+                  (SitePlugin.autoImport.makeSite / mappings)
+                    .dependsOn(mdoc.toTask(" "))
+                    .value
+                },
+      (Compile / paradox) / version := version.value,
+      ParadoxMaterialThemePlugin.paradoxMaterialThemeSettings(Compile),
+      addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, ScalaUnidoc / siteSubdirName),
+      ScalaUnidoc / unidoc / unidocProjectFilter := inAggregates(`izumi-jvm`, transitive=true),
+      Compile / paradoxMaterialTheme ~= {
+                  _.withCopyright("7mind.io")
+                    .withRepository(uri("https://github.com/7mind/izumi"))
+                  //        .withColor("222", "434343")
+                },
+      ScalaUnidoc / siteSubdirName := s"${SettingKey[String]("doc-keys-prefix").value}/api",
+      Paradox / siteSubdirName := s"${SettingKey[String]("doc-keys-prefix").value}/doc",
+      paradoxProperties ++= Map(
+                  "scaladoc.izumi.base_url" -> s"/${SettingKey[String]("doc-keys-prefix").value}/api/com/github/pshirshov/",
+                  "scaladoc.base_url" -> s"/${SettingKey[String]("doc-keys-prefix").value}/api/",
+                  "izumi.version" -> version.value,
+                ),
+      ghpagesCleanSite / excludeFilter :=
+                  new FileFilter {
+                    def accept(f: File): Boolean = {
+                      (f.toPath.startsWith(ghpagesRepository.value.toPath.resolve("latest")) && !f.toPath.startsWith(ghpagesRepository.value.toPath.resolve(SettingKey[String]("doc-keys-prefix").value))) ||
+                        (ghpagesRepository.value / "CNAME").getCanonicalPath == f.getCanonicalPath ||
+                        (ghpagesRepository.value / ".nojekyll").getCanonicalPath == f.getCanonicalPath ||
+                        (ghpagesRepository.value / "index.html").getCanonicalPath == f.getCanonicalPath ||
+                        (ghpagesRepository.value / "README.md").getCanonicalPath == f.getCanonicalPath ||
+                        f.toPath.startsWith((ghpagesRepository.value / "media").toPath) ||
+                        f.toPath.startsWith((ghpagesRepository.value / "v0.5.50-SNAPSHOT").toPath)
+                    }
                   }
-                }
-  )
-  .enablePlugins(ScalaUnidocPlugin, ParadoxSitePlugin, SitePlugin, GhpagesPlugin, ParadoxMaterialThemePlugin, PreprocessPlugin, MdocPlugin)
-  .disablePlugins(ScoverageSbtPlugin, AssemblyPlugin)
-
-lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test
     )
-  )
-  .settings(
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
-    organization := "io.7mind",
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    Test / testOptions += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
+    .enablePlugins(ScalaUnidocPlugin, ParadoxSitePlugin, SitePlugin, GhpagesPlugin, ParadoxMaterialThemePlugin, PreprocessPlugin, MdocPlugin)
+    .disablePlugins(ScoverageSbtPlugin, AssemblyPlugin)
+}
+lazy val `microsite`: Project = `doc_holder`.`microsite`
+
+val `sbt-plugins_holder` = new {
+  lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
+    .settings(
+      libraryDependencies ++= Seq(
+        compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scalatest" %% "scalatest" % "3.1.2" % Test
       )
-      case (_, "2.12.8") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-language:higherKinds",
-        "-Xsource:3",
-        "-P:kind-projector:underscore-placeholders",
-        "-Ypartial-unification",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-release:8",
-        "-explaintypes",
-        "-Xsource:3-cross",
-        "-P:kind-projector:underscore-placeholders",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Wconf:cat=other-match-analysis:error",
-        "-Vimplicits",
-        "-Vtype-diffs",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard",
-        "-Wunused:_",
-        "-Wmacros:default",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } },
-    sbtPlugin := true,
-    sbtPluginPublishLegacyMavenStyle := false,
-    withBuildInfo("izumi.sbt.deps", "Izumi")
-  )
-  .disablePlugins(AssemblyPlugin)
+    )
+    .settings(
+      crossScalaVersions := Seq(
+        "2.12.9",
+        "2.13.0"
+      ),
+      scalaVersion := crossScalaVersions.value.head,
+      organization := "io.7mind",
+      scalacOptions ++= Seq(
+        s"-Xmacro-settings:product-name=${name.value}",
+        s"-Xmacro-settings:product-version=${version.value}",
+        s"-Xmacro-settings:product-group=${organization.value}",
+        s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+        s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+      ),
+      Test / testOptions += Tests.Argument("-oDF"),
+      scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+        case (_, "2.12.9") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.12.8") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-language:higherKinds",
+          "-Xsource:3",
+          "-P:kind-projector:underscore-placeholders",
+          "-Ypartial-unification",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Xlint:adapted-args",
+          "-Xlint:by-name-right-associative",
+          "-Xlint:constant",
+          "-Xlint:delayedinit-select",
+          "-Xlint:doc-detached",
+          "-Xlint:inaccessible",
+          "-Xlint:infer-any",
+          "-Xlint:missing-interpolator",
+          "-Xlint:nullary-override",
+          "-Xlint:nullary-unit",
+          "-Xlint:option-implicit",
+          "-Xlint:package-object-classes",
+          "-Xlint:poly-implicit-overload",
+          "-Xlint:private-shadow",
+          "-Xlint:stars-align",
+          "-Xlint:type-parameter-shadow",
+          "-Xlint:unsound-match",
+          "-opt-warnings:_",
+          "-Ywarn-extra-implicit",
+          "-Ywarn-unused:_",
+          "-Ywarn-adapted-args",
+          "-Ywarn-dead-code",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit",
+          "-Ywarn-numeric-widen",
+          "-Ywarn-unused-import",
+          "-Ywarn-value-discard",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, "2.13.0") => Seq(
+          "-release:8",
+          "-explaintypes",
+          "-Xsource:3-cross",
+          "-P:kind-projector:underscore-placeholders",
+          if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+          "-Wconf:cat=optimizer:warning",
+          "-Wconf:cat=other-match-analysis:error",
+          "-Vimplicits",
+          "-Vtype-diffs",
+          "-Ybackend-parallelism",
+          math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Woctal-literal",
+          "-Wvalue-discard",
+          "-Wunused:_",
+          "-Wmacros:default",
+          "-Ycache-plugin-class-loader:always",
+          "-Ycache-macro-class-loader:last-modified"
+        )
+        case (_, _) => Seq.empty
+      } },
+      sbtPlugin := true,
+      sbtPluginPublishLegacyMavenStyle := false,
+      withBuildInfo("izumi.sbt.deps", "Izumi")
+    )
+    .disablePlugins(AssemblyPlugin)
+}
+lazy val `sbt-izumi-deps`: Project = `sbt-plugins_holder`.`sbt-izumi-deps`
 
 lazy val `fundamentals` = (project in file(".agg/fundamentals-fundamentals"))
   .settings(
