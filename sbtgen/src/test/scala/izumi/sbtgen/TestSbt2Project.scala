@@ -18,7 +18,7 @@ import izumi.sbtgen.model._
   */
 object TestSbt2Project {
 
-  private val scala3 = ScalaVersion("3.3.8")
+  private val scala3 = ScalaVersion("3.3.9")
 
   private val jvm = PlatformEnv(Platform.Jvm, Seq(scala3))
   private val js = PlatformEnv(Platform.Js, Seq(scala3))
